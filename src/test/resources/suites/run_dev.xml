@@ -1,0 +1,14 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+
+<suite name="Suite2" verbose="1">
+    <listeners>
+        <listener class-name="infrastructure.listeners.retry.common.CucumberAnnotationTransformer"/>
+    </listeners>
+
+    <test name="Dev">
+        <parameter name="suite" value="Dev"/>
+        <classes>
+            <class name="testRuns.DevTestRunner"/>
+        </classes>
+    </test>
+</suite>

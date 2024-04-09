@@ -1,0 +1,324 @@
+properties([
+        buildDiscarder(logRotator(artifactDaysToKeepStr: '7',daysToKeepStr: '14')),
+        parameters([
+                string(name: 'CUSTOM_BUILD_NAME', defaultValue: "", description: 'Give your build some name to distinguish it from the nameless ones (Optional)'),
+                gitParameter(branchFilter: 'origin/(.*)', defaultValue: 'main', name: 'BRANCH', useRepository:'https://github.com/fusionmedialimited/qa-auto-selenoid-test', type: 'PT_BRANCH_TAG', selectedValue: 'DEFAULT', listSize:'0', description: "Specify the branch if needed"),
+                choice(name: 'SPECIFY_BROWSER', choices: ['no', 'yes'], description: 'Do you want to specify the browser? \n(if not specified the browser will be: Chrome latest ver., desktop view)'),
+                [$class: 'DynamicReferenceParameter',
+                 choiceType: 'ET_FORMATTED_HTML',
+                 omitValueField: true,
+                 name: 'BROWSER',
+                 referencedParameters: 'SPECIFY_BROWSER',
+                 script: [
+                         $class: 'GroovyScript',
+                         script: [
+                                 classpath: [],
+                                 sandbox: true,
+                                 script:
+                                         """
+                                 def html
+                                 if (SPECIFY_BROWSER.equals('yes')) {
+                                    html =
+                                    '''
+                                    <select name="value" id="browsers">
+                                      <option value="chrome">Chrome</option>
+                                      <option value="chromemobile">Chrome (Mobile view)</option>
+                                      <option value="firefox">Firefox</option>
+                                      <option value="edge">Edge</option>
+                                      <option value="safari">Safari (Linux ver.)</option>
+                                    </select>
+                                    '''
+                                    return html
+                                 } else {
+                                    html =
+                                    '''
+                                    <select name="value" id="browsers">
+                                      <option value="chrome">Chrome</option>
+                                    </select>
+                                    '''
+                                    return html
+                                 }
+                                 """
+                         ]
+                 ]
+                ],
+                [$class: 'CascadeChoiceParameter',
+                 choiceType: 'PT_SINGLE_SELECT',
+                 description: "Browser version is either 'latest' or the previous major version",
+                 filterLength: 1,
+                 filterable: false,
+                 name: 'TAG',
+                 referencedParameters: 'BROWSER',
+                 script: [
+                         $class: 'GroovyScript',
+                         script: [
+                                 classpath: [],
+                                 sandbox: true,
+                                 script:
+                                         """
+                         switch(BROWSER) {
+                             case ["chrome", "chromemobile"]:
+                                return ["latest", "profile", "122.0", "121.0", "120.0", "119.0"]
+                             case "firefox":
+                                 return ["latest", "118.0", "117.0", "116.0", "115.0"]
+                             case "edge":
+                                 return ["latest", "114.0", "113.0", "112.0", "111.0"]
+                             case "safari":
+                                 return ["15.0", "14.0", "13.0"]
+                             default:
+                                 return ["latest"]
+                         }
+                         """
+                          ]
+                 ]
+                ],
+                string(name: 'URL', defaultValue: "investing.com", description: 'Site Url' ),
+                choice(name: 'EDITION', choices: ['www', 'qa-automation-test.qa', 'de', 'es', 'fr', 'it', 'nl', 'pl', 'br', 'pt', 'tr', 'ru', 'kr', 'jp', 'cn', 'hk', 'sa', 'se', 'gr', 'id', 'th', 'vn', 'fi', 'il', 'au', 'ca', 'in', 'ng', 'ph', 'za', 'hi', 'uk', 'ms', 'mx'], description: 'Choose An Edition'),
+                choice(name: 'THREADS', choices: ['4', '3', '2', '1'], description: 'Number Of Threads'),
+                choice(name: 'TRIES', choices: ['1', '2', '3'], description: 'Number Of Tries For Failing Tests'),
+                choice(name: "SUITE_OR_TEST", choices:['Test Suite', 'Specific Test(s)'], description: "Specify that would you like to run an existing Test Suite or a specific Test"),
+                [$class: 'DynamicReferenceParameter',
+                 choiceType: 'ET_FORMATTED_HTML',
+                 omitValueField: true,
+                 name: 'SUITE_TEST',
+                 referencedParameters: 'SUITE_OR_TEST, ENVIRONMENT',
+                 script: [
+                         $class: 'GroovyScript',
+                         script: [
+                                 classpath: [],
+                                 sandbox: true,
+                                 script:
+                                         """
+                                            if(SUITE_OR_TEST.equals('Test Suite')) { 
+                                               def html = ''' 
+                                                   <p> Suites: <a href="https://inv.atlassian.net/wiki/spaces/QA/pages/532971598/Web+Automation+Test+Suites" target="_blank">(click here to see the suites content)</a></p> 
+                                                   <input type="radio" name="value" id="coreRegression" value="run_coreRegression">run_coreRegression<br> 
+                                               ''' 
+                                               return html 
+                                           } else { 
+                                               return "<input name=\\"value\\" type=\\"text\\" placeholder=\\"Enter the test tag(s), single or several comma-separated, e.g.: @Equities or @CT-1234, @CT-4567\\" value=\\"\\" style=\\"width: 50%\\">" 
+                                           }
+                                         """
+                         ]
+                 ]
+                ]
+        ])
+])
+
+def SUITE, TESTS_TAGS, SELENOID_UI_IP, SUMMARY, EXECUTION_KEY
+
+pipeline {
+    agent {label 'docker-slave && eu-node'}
+    options {
+        ansiColor('xterm')
+    }
+
+    stages {
+        stage('Pull required docker image') {
+            steps {
+                script {
+                    // in case of the 'triggered' run the BROWSER and TAG params won't have the default values so we need to assign them
+                    TAG = params.TAG == "" ? "latest" : params.TAG
+                    BROWSER = params.BROWSER == "" ? "chrome" : params.BROWSER == "chromemobile" ? "chrome" : params.BROWSER
+
+                    sh """docker pull browsers/${BROWSER}:${TAG} && docker pull sergeibo/chrome-ublock-profile:release"""
+                    sh """docker pull selenoid/video-recorder:latest-release"""
+                }
+            }
+        }
+
+        stage('Git Checkout') {
+            steps {
+                script {
+                    BUILD_TRIGGER_BY = "${currentBuild.getBuildCauses()[0].userId}"
+                    echo "BUILD_TRIGGER_BY: ${BUILD_TRIGGER_BY}"
+
+                    SELENOID_UI_IP = sh (script: """ip -4 -o addr show eth0 | awk '{print \$4}' | cut -d "/" -f 1""", returnStdout: true).trim()
+                }
+
+                // add description to the build
+                script {
+                    if (!CUSTOM_BUILD_NAME.equals("")) {
+                        currentBuild.displayName = "#${env.BUILD_NUMBER} - ${CUSTOM_BUILD_NAME}"
+                    }
+                    currentBuild.description = "Browser: ${BROWSER} \nVersion tag: ${TAG} \nURL: ${params.URL} \nSuite: CoreRegression \nEdition: ${params.EDITION}"
+                }
+
+                cleanWs()
+                git branch: "${params.BRANCH}", credentialsId: 'github-app', url: 'https://github.com/fusionmedialimited/qa-auto-selenoid-test.git'
+            }
+        }
+
+        stage('Set the run mode') {
+            steps {
+                // define the SUITE value
+                script {
+                    if (SUITE_OR_TEST.equals("Specific Test(s)")) {
+                        SUITE = "run_dev"
+                        // replace commas with 'or' if they're present for the Cucumber runner
+                        if (SUITE_TEST.contains(",")) {
+                            TESTS_TAGS = SUITE_TEST.replaceAll(",", " or ")
+                        } else {
+                            TESTS_TAGS = SUITE_TEST
+                        }
+
+                        // set the specified Test Tag in DevTestRunner.java to run it as the run_dev suite
+                        sh """
+                        #!/bin/bash
+                        sed -i -e "s/tags =.* /tags = \\"${TESTS_TAGS}\\" \\/\\/ /" src/test/java/testRuns/DevTestRunner.java
+                        cat src/test/java/testRuns/DevTestRunner.java
+                        """
+                    } else {
+                        SUITE = "${SUITE_TEST}"
+                    }
+                }
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                script {
+                    if (!getContainerId('mvn-web-test').equals("")) {
+                        echo  "\033[34m...Remove the old test container since it's present...\033[0m"
+                        deleteContainerById(getContainerId('mvn-web-test'))
+                    }
+
+                    if (!getContainerId('selenoid').equals("")) {
+                        echo  "\033[34m...Remove the old Selenoid container since it's present...\033[0m"
+                        deleteContainerById(getContainerId('selenoid'))
+                    }
+
+                    if (!getContainerId('selenoid-ui').equals("")) {
+                        echo  "\033[34m...Remove the old Selenoid-UI container since it's present...\033[0m"
+                        deleteContainerById(getContainerId('selenoid-ui'))
+                    }
+                }
+
+                echo "Run params: BROWSER=\033[32m${BROWSER}\033[0m TAG=\033[32m${TAG}\033[0m SUITE=\033[32mrun_coreRegression\033[0m URL=\033[32m${params.URL}\033[0m EDITION=\033[32m${params.EDITION}\033[0m THREADS=\033[32m${THREADS}\033[0m TRIES=\033[32m${TRIES}\033[0m"
+                echo "\033[34mStarting Docker Compose...\033[0m"
+                sh "mkdir -p ./allure-results"
+                sh "mkdir -p ./reports"
+                sh "BROWSER=${BROWSER} TAG=${TAG} SUITE=${SUITE} URL=${params.URL} EDITION=${params.EDITION} THREADS=${params.THREADS} TRIES=${params.TRIES} SQUAD=CoreWeb docker-compose -f docker-compose-web.yml up --force-recreate --build --abort-on-container-exit --exit-code-from webmvntest"
+                echo "\033[34mStopping Docker Compose...\033[0m"
+                sh 'docker-compose -f docker-compose-web.yml down'
+            }
+        }
+    }
+
+    post {
+        cleanup {
+            echo 'Cleanup docker staff!'
+            sh '''
+            if [ -z "$(docker ps -a -q)" ]; then
+              echo "Nothing to stop"
+            else
+              docker stop $(docker ps -a -q)
+              docker rm -f $(docker ps -a -q)
+            fi
+            '''
+        }
+
+        always {
+            // TODO: investigate the reason of the absence of 'log4j2/log4j2-test-automation.log' file with Log4j2 logs on this stage
+//            echo "\033[34mPreparing the Log4j2 report...\033[0m"
+//            echo "Current workspace is ${env.WORKSPACE}"
+//
+//            script {
+//                try {
+//                    archiveArtifacts "Web/log4j2/log4j2-test-automation.log"
+//                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'Web/log4j2/', reportFiles: '**/*.log', reportName: 'Log4j2 Report', reportTitles: 'Log4j2 Report'])
+//                } catch (Exception e) {
+//                    echo "Failed to archive or publish Log4j2 report: ${e.message}"
+//                }
+//            }
+
+            echo "\033[34mPreparing the Cucumber report...\033[0m"
+            script {
+                archiveArtifacts "reports/Cucumber.json"
+                cucumber customCssFiles: '', customJsFiles: '', failedFeaturesNumber: -1, failedScenariosNumber: -1, failedStepsNumber: -1, fileIncludePattern: '**/*.json', jsonReportDirectory: 'reports/', pendingStepsNumber: -1, skippedStepsNumber: -1, sortingMethod: 'ALPHABETICAL', undefinedStepsNumber: -1
+                publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'reports/', reportFiles: '**/*.html', reportName: 'Cucumber Report', reportTitles: 'Cucumber Report'])
+            }
+
+            echo "\033[34mPublishing the Allure report...\033[0m"
+
+            script {
+                def reportFile = findFiles(glob: 'allure-results/*.*')
+                echo "size is: " + reportFile.length
+
+                if (reportFile.length > 0) {
+                    allure([
+                            includeProperties: false,
+                            jdk: '',
+                            properties: [],
+                            reportBuildPolicy: 'ALWAYS',
+                            results: [[path: 'allure-results']]
+                    ])
+                } else {
+                    echo "[ERROR]: the Allure Report files were not found!"
+                }
+            }
+
+            echo "\033[34mImporting results to Xray...\033[0m"
+            script {
+                def cucumberReportFile = findFiles(glob: 'reports/*.json')
+                echo "size is: " + cucumberReportFile.length
+
+                if (cucumberReportFile.length > 0) {
+                    def description = "*Automation run parameters:* \\nBrowser: _${BROWSER}_ Ver. _${TAG}_ \\nURL: _${params.URL}_ \\nEdition: _${params.EDITION}_ \\n\\n[URL to the build on Jenkins|${env.BUILD_URL}]"
+                    def labels = '["xray_integration"]'
+                    def title = "${currentBuild.displayName} CoreWeb Regression"
+                    def finishedTime = String.format('%tF %<tH:%<tM', java.time.LocalDateTime.now())
+                    def testExecutionFieldId = 10603
+                    def testEnvironmentFieldName = "customfield_11028"
+                    def environment = "${params.URL}"
+                    def edition = "${params.EDITION}"
+                    SUMMARY = title + ''' @ ''' + finishedTime
+                    def projectKey = "CT"
+                    def xrayConnectorId = '525e9b66-f203-4107-bf03-89bea3f7c53a'
+                    def info =
+                            '''{
+                        "fields": {
+                            "project": {
+                                "key": "''' + projectKey + '''"
+                            },
+                            "labels":''' + labels + ''',
+                            "description":"''' + description + '''",
+                            "summary": "''' + SUMMARY + '''" ,
+                            "issuetype": {
+                                "id": "''' + testExecutionFieldId + '''"
+                            },
+                            "''' + testEnvironmentFieldName + '''":"''' + environment + '''"
+                        }
+                    }'''
+                    echo info
+
+                    step([
+                            $class: 'XrayImportBuilder',
+                            endpointName: '/cucumber/multipart',
+                            importFilePath: 'reports/Cucumber.json',
+                            importInfo: info,
+                            inputInfoSwitcher: 'fileContent',
+                            serverInstance: xrayConnectorId
+                    ])
+                } else {
+                    echo "[ERROR]: the Cucumber Report file was not found! Cannot export the results to X-ray"
+                }
+            }
+
+            script {
+                if(manager.logContains('XRAY_TEST_EXECS:.*')) {
+                    EXECUTION_KEY = manager.getLogMatcher('(XRAY_TEST_EXECS: )+(.*+)').group(2)
+                } else echo 'Xray doesn\'t specify the XRAY_TEST_EXECS value, seems like importing the execution results is failed'
+            }
+        }
+    }
+}
+
+
+def getContainerId(containerName) {
+    return sh(script:'docker ps -aqf "name=^' + containerName + '$" || true', returnStdout: true).trim()
+}
+
+def deleteContainerById(containerId) {
+    sh(script:'docker stop ' + containerId+ ' &&  docker rm ' + containerId+ ' && echo "container ' + containerId+ ' was removed!" || true', returnStdout: true).trim()
+}
