@@ -1,31 +1,10 @@
 package infrastructure.utilities;
 
-import org.joda.time.DateTime;
-
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.Clock;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
-import java.util.Date;
 
 public class DateTimeUtilities {
-
-    /** This method returns Unix Time Stamp value with an offset, if specified
-     *
-     * @param offsetValue the offset value
-     * @param offsetTimeUnit ChronoUnits (months, days, hours, minutes...)
-     * @return Unix Time Stamp value - offset
-     */
-    public static String getUnixTimeStampWithOffset(int offsetValue, ChronoUnit offsetTimeUnit) {
-        Instant instant = Instant.now(Clock.systemUTC()).minus(offsetValue, offsetTimeUnit);
-        return String.valueOf(instant.getEpochSecond());
-    }
 
     /**
      * Get date with given format
@@ -67,45 +46,4 @@ public class DateTimeUtilities {
         return getDate(pattern, 0, 0 ,0);
     }
 
-    /**
-     * Get current timestamp
-     *
-     * @return Rounded for millis current time as java.sql.Timestamp object
-     */
-    public static Timestamp getCurrentTimestamp() {
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.MILLISECOND, 0);
-        return new Timestamp(cal.getTime().getTime());
-    }
-
-
-    /**
-     * Parses the given date string using the specified date format and returns a LocalDate object.
-     *
-     * @param dateString the date string to parse
-     * @param pattern    the date format string, which should be in the pattern expected by the DateTimeFormatter class
-     * @return a LocalDate object representing the parsed date string
-     */
-    public static LocalDate parseDate(String dateString, String pattern) {
-        DateTimeFormatter formatter = new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern(pattern).toFormatter();
-        return LocalDate.parse(dateString, formatter);
-    }
-
-    /**
-     * Returns the current system date as a LocalDate object.
-     *
-     * @return The LocalDate object that represents the current system date.
-     */
-    public static LocalDate getCurrentLocalDate() {
-        return LocalDate.now();
-    }
-
-    public static DateTime parseDateTimeFromString(String strToParse, org.joda.time.format.DateTimeFormatter dateTimeFormatter) {
-        return DateTime.parse(strToParse, dateTimeFormatter);
-    }
-
-    public static String formatTimestampToHHmmss(Date timestamp) {
-        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-        return formatter.format(timestamp);
-    }
 }

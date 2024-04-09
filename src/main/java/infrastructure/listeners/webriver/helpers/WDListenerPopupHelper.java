@@ -51,29 +51,6 @@ public class WDListenerPopupHelper {
                 }
     }
 
-    /**
-     * Sign Up promo popup appears when user’s mouse cursor escape from the page focus
-     */
-    public static synchronized void detectAndCloseSignUpPromoPopup() {
-        if (!ThreadLocalPopups.getSignUpPromoPopupShownFlag())
-            if (isPageRelevantForSignUpPopup.get())
-                    if (closePromotionSignUp())
-                        ThreadLocalPopups.putSignUpPromoPopupShownFlag();
-    }
-
-    public static synchronized void detectAndCloseProPromoPopup() {
-        if (!ThreadLocalPopups.getProPromoPopupShownFlag())
-            if (closeProPromoPopup())
-                ThreadLocalPopups.putSignUpPromoPopupShownFlag();
-    }
-
-    public static synchronized void detectAndCloseSalePromoPopup(String page) {
-        if (!ThreadLocalPopups.getProSalePromoPopupShownFlag())
-            if (isPageRelevantForProSaleBanner.test(page))
-                    if (closeProPromoPopup())
-                        ThreadLocalPopups.putProSalePromoPopupShownFlag();
-    }
-
     public static synchronized void detectAndCloseProPicksPromoPopup(String page) {
         if (!ThreadLocalPopups.getProPicksPromoPopupShownFlag()) {
             if (isPageRelevantForProPicksBanner.test(page))
@@ -89,24 +66,6 @@ public class WDListenerPopupHelper {
                 String page = NavigationUtilities.getCurrentPage();
                 // ProPicks banner processing
                 WDListenerPopupHelper.detectAndCloseProPicksPromoPopup(page);
-        }
-    }
-
-    public static synchronized void detectAndCloseProTipsPromoPopup(String page) {
-        if (!ThreadLocalPopups.getProTipsPromoPopupShownFlag()) {
-            if (isPageRelevantForProTipsBanner.test(page)) {
-                if (closePopupWithIframe())
-                    ThreadLocalPopups.putProTipsPromoPopupShownFlag();
-            }
-        }
-    }
-
-    public static synchronized void detectAndCloseProMarchSalePromoPopup() {
-        if (!ThreadLocalPopups.getProMarchSalePromoPopupShownFlag()) {
-            String page = NavigationUtilities.getCurrentPage();
-            if (isPageRelevantForProMarchSaleBanner.test(page))
-                if (closePopupWithIframe())
-                    ThreadLocalPopups.putProMarchSalePromoPopupShownFlag();
         }
     }
 }

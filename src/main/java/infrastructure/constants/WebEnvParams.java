@@ -16,8 +16,6 @@ public class WebEnvParams {
     private static final String browserValue = "chrome";
     private static final String editionValue = "www";
     private static final String urlValue = "investing.com";
-    private static final String squadValue = "core-web";
-    private static final String suiteValue = "run_dev";
     private static final String noCashValue = "0";
 
     public static String getTagParam() {
@@ -78,27 +76,6 @@ public class WebEnvParams {
 
     public static boolean isOnCanary() {
         return getUrlParam().contains(CANARY_SUB_DOMAIN);
-    }
-
-    public static String getSquadParam() {
-        String squad;
-        if (System.getProperty("squad") != null)
-            squad = !System.getProperty("squad").isEmpty() ? System.getProperty("squad") : squadValue;
-        else
-            squad = squadValue;
-
-        return squad;
-    }
-
-    public static String getSuiteParam() {
-        String suite;
-        if (System.getProperty("suite") != null)
-            suite = !System.getProperty("suite").isEmpty() ? System.getProperty("suite").toLowerCase(Locale.ROOT)
-                    : suiteValue;
-        else
-            suite = suiteValue;
-
-        return suite;
     }
 
     public static String getHomeURL() {

@@ -30,19 +30,6 @@ public class WDListenerCookieHelper {
         cookiesModifiedFlag.set(true);
     }
 
-    public static void logCookies() {
-        String cookiesOutput = ThreadLocalDriver.get()
-                .manage()
-                .getCookies()
-                .stream()
-                .map((cookie) -> cookie.getName() + ": " + cookie.getValue())
-                .collect(Collectors.toList())
-                .toString()
-                .replace(",", ",\n");
-
-        allureAttachText("Current cookies values", cookiesOutput);
-    }
-
     /**
      * <b>invpro_promote_variant</b> cookie should be set as <b>0</b>
      * to prevent Pro Promo popup displaying

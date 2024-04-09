@@ -15,18 +15,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ByLocatorUtilities {
-
-    /**
-     * @param  dataTestValue value of the "data-test" attribute from web-element
-     * @return locator of web-element
-     */
-    public static By byDataTest(String dataTestValue) {
-        return By.cssSelector(String.format("[data-test = \"%s\"]", dataTestValue));
-    }
 
     /**
      * This method gets the selector value out of the specified web element
@@ -58,16 +49,6 @@ public class ByLocatorUtilities {
                         ? element.toString().substring(element.toString().indexOf("'") + 1, element.toString().lastIndexOf("'"))
                         : "[locator not found]",
                 "}");
-    }
-
-    /**
-     * This method gets the selector value out of the specified {@link By} locator
-     *
-     * @param locator from which teh selector will be extracted
-     * @return the selector value as string
-     */
-    public static String getSelectorFromLocator(By locator) {
-        return locator.toString().split(":")[1];
     }
 
     /**
@@ -152,19 +133,6 @@ public class ByLocatorUtilities {
         } catch (InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodException cause) {
             throw new InvestingException("Couldn't build locator from composite selector!", cause);
         }
-    }
-
-    /**
-     * Extract all {@link By} locators from the {@link ByChained} instance, saving the order
-     */
-    public static List<By> extractSubLocatorsFromCompositeLocator(By locator, Class<?> clazz) {
-        // chained locator validation
-        if (!(clazz == ByAll.class || clazz == ByChained.class))
-            throw new IllegalArgumentException("Locator from composite selector could be build only for ByAll or ByChained types! But provided type is: " + clazz.getSimpleName());
-
-        // build locator from each sub-selector
-        return streamOfLocatorsFromCompositeSelector(locator.toString())
-                .collect(Collectors.toList());
     }
 
     private static Stream<By> streamOfLocatorsFromCompositeSelector(String selector) {
