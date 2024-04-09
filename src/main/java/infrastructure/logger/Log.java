@@ -18,9 +18,6 @@ public class Log {
     private static final String TEST_NAME_KEY = "testName";
     private static final String TRY_KEY = "tryNumber";
 
-    private static final File logDirectory = new File("./log4j2");
-    private static final Pattern logFilenamePattern = Pattern.compile("^log4j2-\\$\\{ctx:testId}-\\$\\{ctx:lineNumber}-\\$\\{ctx:tryNumber}.*\\.log$");
-
     private static final ThreadLocal<Integer> tryCounter = ThreadLocal.withInitial(() -> 0);
 
 
@@ -50,8 +47,6 @@ public class Log {
         putIntoThreadContext(LINE_NUMBER_KEY, String.valueOf(ThreadLocalScenario.getLine()));
         putIntoThreadContext(TRY_KEY, String.valueOf(tryCounter.get()));
 
-        // delete file created automatically on startup
-//        FileUtilities.deleteFiles(logDirectory, logFilenamePattern);
 
         info(
                 String.format(

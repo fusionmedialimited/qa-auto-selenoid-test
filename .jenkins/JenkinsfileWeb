@@ -219,19 +219,6 @@ pipeline {
         }
 
         always {
-            // TODO: investigate the reason of the absence of 'log4j2/log4j2-test-automation.log' file with Log4j2 logs on this stage
-//            echo "\033[34mPreparing the Log4j2 report...\033[0m"
-//            echo "Current workspace is ${env.WORKSPACE}"
-//
-//            script {
-//                try {
-//                    archiveArtifacts "Web/log4j2/log4j2-test-automation.log"
-//                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'Web/log4j2/', reportFiles: '**/*.log', reportName: 'Log4j2 Report', reportTitles: 'Log4j2 Report'])
-//                } catch (Exception e) {
-//                    echo "Failed to archive or publish Log4j2 report: ${e.message}"
-//                }
-//            }
-
             echo "\033[34mPreparing the Cucumber report...\033[0m"
             script {
                 archiveArtifacts "reports/Cucumber.json"
@@ -256,59 +243,6 @@ pipeline {
                 } else {
                     echo "[ERROR]: the Allure Report files were not found!"
                 }
-            }
-
-            echo "\033[34mImporting results to Xray...\033[0m"
-            script {
-                def cucumberReportFile = findFiles(glob: 'reports/*.json')
-                echo "size is: " + cucumberReportFile.length
-
-                if (cucumberReportFile.length > 0) {
-                    def description = "*Automation run parameters:* \\nBrowser: _${BROWSER}_ Ver. _${TAG}_ \\nURL: _${params.URL}_ \\nEdition: _${params.EDITION}_ \\n\\n[URL to the build on Jenkins|${env.BUILD_URL}]"
-                    def labels = '["xray_integration"]'
-                    def title = "${currentBuild.displayName} CoreWeb Regression"
-                    def finishedTime = String.format('%tF %<tH:%<tM', java.time.LocalDateTime.now())
-                    def testExecutionFieldId = 10603
-                    def testEnvironmentFieldName = "customfield_11028"
-                    def environment = "${params.URL}"
-                    def edition = "${params.EDITION}"
-                    SUMMARY = title + ''' @ ''' + finishedTime
-                    def projectKey = "CT"
-                    def xrayConnectorId = '525e9b66-f203-4107-bf03-89bea3f7c53a'
-                    def info =
-                            '''{
-                        "fields": {
-                            "project": {
-                                "key": "''' + projectKey + '''"
-                            },
-                            "labels":''' + labels + ''',
-                            "description":"''' + description + '''",
-                            "summary": "''' + SUMMARY + '''" ,
-                            "issuetype": {
-                                "id": "''' + testExecutionFieldId + '''"
-                            },
-                            "''' + testEnvironmentFieldName + '''":"''' + environment + '''"
-                        }
-                    }'''
-                    echo info
-
-                    step([
-                            $class: 'XrayImportBuilder',
-                            endpointName: '/cucumber/multipart',
-                            importFilePath: 'reports/Cucumber.json',
-                            importInfo: info,
-                            inputInfoSwitcher: 'fileContent',
-                            serverInstance: xrayConnectorId
-                    ])
-                } else {
-                    echo "[ERROR]: the Cucumber Report file was not found! Cannot export the results to X-ray"
-                }
-            }
-
-            script {
-                if(manager.logContains('XRAY_TEST_EXECS:.*')) {
-                    EXECUTION_KEY = manager.getLogMatcher('(XRAY_TEST_EXECS: )+(.*+)').group(2)
-                } else echo 'Xray doesn\'t specify the XRAY_TEST_EXECS value, seems like importing the execution results is failed'
             }
         }
     }

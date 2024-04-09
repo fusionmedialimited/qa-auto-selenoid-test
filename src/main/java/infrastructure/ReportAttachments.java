@@ -8,105 +8,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.stream.JsonReader;
 import infrastructure.enums.LogLevel;
 import infrastructure.logger.Log;
-import infrastructure.threadlocals.ThreadLocalDriver;
-import infrastructure.threadlocals.ThreadLocalScenario;
-import io.cucumber.java.Scenario;
-import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.logging.LogType;
 
 import java.io.*;
-import java.net.URL;
-
-import static infrastructure.enums.LogLevel.ERROR;
-import static org.testng.Assert.assertNotNull;
 
 public class ReportAttachments {
-// TODO: implement the getVideoFromFolder() the way it will work:
-
-    /**
-     * This method gets the video as an Input Stream directly from the Selenoid server from the specified URL
-     *
-     * @param url of the video on the Selenoid server
-     */
-    public static InputStream getVideoFromServer(URL url) {
-        assertNotNull(url, "The specified URL is null");
-
-        int lastSize = 0;
-        int exit = 2;
-        for (int i = 0; i < 20; i++) {
-            try {
-                int size = Integer.parseInt(url.openConnection().getHeaderField("Content-Length"));
-                Log.info("Content-Length s: " + size);
-                if (size > lastSize) {
-                    lastSize = size;
-                    Thread.sleep(1500);
-                } else if (size == lastSize) {
-                    Log.info("Content-Length is: " + size);
-                    exit--;
-                    Thread.sleep(1000);
-                }
-                if (exit < 0) {
-                    Log.info("the video is ready!");
-                    return url.openStream();
-                }
-            } catch (Exception | AssertionError e) {
-                Log.error("There is a problem with getting video from the URL: " + url + ", see the stack traces: " + e);
-            }
-        }
-        return null;
-    }
-
-    // TODO: update logger
-    //  to generate logs for the each test in the separated file
-    //  or re-write the existent file for each thread
-    /**
-     * This method attaches Log4j2 file from the 'log4j2' folder to the Cucumber JSON report
-     *
-     * @param scenario a current Cucumber scenario
-     */
-    public static void cucumberAttachLog4j(Scenario scenario) {
-        try {
-            byte[] fileData = FileUtils.readFileToByteArray(new File("log4j2/log4j2-test-automation.log"));
-            scenario.attach(fileData, "text/plain", "Log4j logs");
-        } catch (IOException e) {
-            Log.error("The Log4j log file was not found in the 'log4j2' folder");
-        }
-    }
-
-    /**
-     * This method attaches screenshot of the current browser screen to the Cucumber JSON report
-     *
-     * @param attachName the name for the attached block with the screenshot in the report
-     */
-    public static void cucumberAttachScreenshot(String attachName) {
-        byte[] data = ((TakesScreenshot) ThreadLocalDriver.get().getDriver()).getScreenshotAs(OutputType.BYTES);
-        ThreadLocalScenario.get().attach(data, "image/png", attachName);
-    }
-
-    /**
-     * This method accepts a byte array and attaches it to the Cucumber JSON report with the specified name
-     *
-     * @param attachName a name of the attachment
-     * @param data       a byte array with video
-     */
-    public static void cucumberAttachVideo(Scenario scenario, String attachName, byte[] data) {
-        if (data != null) {
-            scenario.attach(data, "video/mp4", attachName);
-        } else Log.error("Can't attache video file, specified byte array is null");
-    }
-
-    /**
-     * This method attaches current browser logs to the Cucumber JSON report (currently supported: Chrome, FireFox, Edge)
-     */
-    public static void cucumberAttachBrowserLog(Scenario scenario, Investing investing) {
-        scenario.attach(String.valueOf(investing
-                .getDriver()
-                .manage()
-                .logs()
-                .get(LogType.BROWSER).getAll()), "text/plain", "Browser console log:");
-    }
 
     /**
      * This method simple copies the specified string value to the logs and return it back.

@@ -1,6 +1,5 @@
 package infrastructure.utilities;
 
-import infrastructure.Investing;
 import infrastructure.constants.ConstantProvider;
 import infrastructure.exceptions.InvestingException;
 import infrastructure.logger.Log;
@@ -11,25 +10,13 @@ import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
-import java.util.List;
-import java.util.stream.Collectors;
 
-import static infrastructure.allure.AllureAttachments.allureAttachText;
-import static infrastructure.constants.ConstantProvider.WebConstant.TimeoutDuration.*;
+import static infrastructure.constants.ConstantProvider.WebConstant.TimeoutDuration.ELEMENT_WAITING_DURATION_FULL;
+import static infrastructure.constants.ConstantProvider.WebConstant.TimeoutDuration.MINIMAL_WAITING_DURATION;
 import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 
 public class WaitUtilities {
 
-    /**
-     * waits for the specified amount of time in millis
-     *
-     * @param driver:       driver object
-     * @param timeInMillis: to wait
-     */
-    public static FluentWait<WebDriver> customWait(Investing driver, int timeInMillis) {
-        WebDriver webDriver = driver.getDriver();
-        return new WebDriverWait(webDriver, Duration.ofMillis(timeInMillis));
-    }
 
     /**
      * waits for the specified amount of time
@@ -42,14 +29,6 @@ public class WaitUtilities {
     }
 
     /**
-     * waits for the duration, provide in constant:
-     * {@link ConstantProvider.WebConstant.TimeoutDuration#ELEMENT_WAITING_DURATION_FULL}
-     */
-    public static FluentWait<WebDriver> customWait() {
-        return customWait(ELEMENT_WAITING_DURATION_FULL);
-    }
-
-    /**
      * Wait until provided condition will be completed for provided duration
      *
      * @param duration duration to wait
@@ -58,17 +37,6 @@ public class WaitUtilities {
     public static <T> T waitUntil(Duration duration, ExpectedCondition<T> isTrue) {
         Log.info("Expected condition to wait: " + isTrue.toString());
         return customWait(duration).until(isTrue);
-    }
-
-    /**
-     * Wait until provided condition will be completed. <br>
-     * Duration of waiting is provided in constant:
-     * {@link ConstantProvider.WebConstant.TimeoutDuration#ELEMENT_WAITING_DURATION_FULL}
-     *
-     * @param isTrue condition to wait
-     */
-    public static <T> T waitUntil(ExpectedCondition<T> isTrue) {
-        return customWait().until(isTrue);
     }
 
     /**
@@ -95,15 +63,6 @@ public class WaitUtilities {
         }
     }
 
-    /**
-     * waits for presence of passed web element.
-     * Duration of waiting is provided from {@link ConstantProvider.WebConstant.TimeoutDuration#ELEMENT_WAITING_DURATION_FULL} const
-     *
-     * @param elementAttr element or locator to wait for
-     */
-    public static <T> WebElement waitForPresence(T elementAttr) {
-        return waitForPresence(ELEMENT_WAITING_DURATION_FULL, elementAttr);
-    }
     /**
      * waits for visibility of existing Web element
      *
@@ -132,41 +91,6 @@ public class WaitUtilities {
     }
 
     /**
-     * waits for visibility of all provided elements
-     *
-     * @param elementAttrs element(s) or locator(s) to wait for
-     * @param duration     duration to wait
-     */
-    public static <T> List<WebElement> waitForVisibilityAll(Duration duration, List<T> elementAttrs) {
-        try {
-            return elementAttrs.stream()
-                            .map(elementAttr -> waitForVisibility(duration, elementAttr))
-                            .collect(Collectors.toList());
-        } catch (TimeoutException | NoSuchElementException cause) {
-                throw new TimeoutException("Time for waiting for visibility of several elements finished, but some of them is not visible!", cause);
-        } catch (Exception cause) {
-                throw new InvestingException("Waiting for visibility of several elements failed!", cause);
-        }
-    }
-
-    /**
-     * waits for visibility of all provided elements
-     *
-     * @param elementAttrs element(s) or locator(s) to wait for
-     */
-    public static <T> List<WebElement> waitForVisibilityAll(List<T> elementAttrs) {
-        try {
-            return elementAttrs.stream()
-                            .map(WaitUtilities::waitForVisibility)
-                            .collect(Collectors.toList());
-        } catch (TimeoutException | NoSuchElementException cause) {
-                throw new TimeoutException("Time for waiting for visibility of several elements finished, but some of them is not visible!", cause);
-        } catch (Exception cause) {
-                throw new InvestingException("Waiting for visibility of several elements failed!", cause);
-        }
-    }
-
-    /**
      * Waits for an element to be invisible or not present on the DOM.
      *
      * @param elementAttr element to disappear
@@ -187,38 +111,4 @@ public class WaitUtilities {
         }
     }
 
-    /**
-     * Waits for an element to be invisible or not present on the DOM.
-     * Duration of waiting is provided from {@link ConstantProvider.WebConstant.TimeoutDuration#ELEMENT_WAITING_DURATION_FULL} const
-     *
-     * @param elementAttr element to disappear
-     */
-    public static <T> void waitForInvisibility(T elementAttr) {
-        waitForInvisibility(ELEMENT_WAITING_DURATION_FULL, elementAttr);
-    }
-
-    /**
-     * Wait for loader appearing and further disappearing, if it was displayed
-     *
-     * @param loaderLocator locator of the loader, which should be displayed and then hidden
-     * @param timeoutForPresence  time to wait for loader will be displayed
-     * @param timeoutForDisappearing time to wait for loader will be hidden
-     */
-    public static void waitForLoading(By loaderLocator, Duration timeoutForPresence, Duration timeoutForDisappearing) {
-        // wait for loader presence
-        try {
-            waitUntil(timeoutForPresence, visibilityOfElementLocated(loaderLocator));
-        } catch (TimeoutException timeoutException) {
-            return;
-        }
-
-        // wait for loader disappearing
-        try {
-            waitUntil(timeoutForDisappearing, invisibilityOfElementLocated(loaderLocator));
-        } catch (TimeoutException timeoutException) {
-            allureAttachText("warn", "Time was up, but loader have been still displayed!");
-        }
-
-        Log.info("Loader was displayed and then hidden");
-    }
 }

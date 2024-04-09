@@ -1,4 +1,4 @@
-package pageObjects.factories;
+package pageObjects.factories.equities;
 
 import infrastructure.Investing;
 import pageObjects.interfaces.equities.BaseInstrumentMethods;

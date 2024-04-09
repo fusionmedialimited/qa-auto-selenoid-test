@@ -53,18 +53,6 @@ public class ThreadLocalScenario {
     }
 
     /**
-     * @return ids of Jira tickets with bugs, provided in the Cucumber Scenario tags
-     */
-    public static List<String> getIssues() {
-        String prefix = "@issue=";
-
-        return getTags().stream()
-                .filter(tag -> tag.startsWith(prefix))
-                .map(tag -> StringUtils.removeStart(tag, prefix))
-                .collect(Collectors.toList());
-    }
-
-    /**
      * @return the test ID from the corresponding tag (like '@CT-xxxx' or '@tmsLink=CT-xxxx').
      *         if such tag isn't exist this will return NULL
      */
