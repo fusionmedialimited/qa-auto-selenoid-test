@@ -1,0 +1,109 @@
+{
+  "chrome": {
+    "default": "latest",
+    "versions": {
+      "latest": {
+        "image": "browsers/chrome:latest",
+        "port": "4444"
+      },
+      "profile": {
+        "image": "sergeibo/chrome-ublock-profile:release",
+        "port": "4444"
+      },
+      "local": {
+        "image": "dumbdumbych/selenium_vnc_chrome_arm64:91.0.b",
+        "port": "4444",
+        "path": "/",
+        "privileged": true
+      },
+      "122.0": {
+        "image": "browsers/chrome:122.0",
+        "port": "4444"
+      },
+      "121.0": {
+        "image": "browsers/chrome:121.0",
+        "port": "4444"
+      },
+      "120.0": {
+        "image": "browsers/chrome:120.0",
+        "port": "4444"
+      },
+      "119.0": {
+        "image": "browsers/chrome:119.0",
+        "port": "4444"
+      }
+    }
+  },
+  "firefox": {
+    "default": "latest",
+    "versions": {
+      "latest": {
+        "image": "browsers/firefox:latest",
+        "port": "4444",
+        "path": "/wd/hub"
+      },
+      "118.0": {
+        "image": "browsers/firefox:118.0",
+        "port": "4444",
+        "path": "/wd/hub"
+      },
+      "117.0": {
+        "image": "browsers/firefox:117.0",
+        "port": "4444",
+        "path": "/wd/hub"
+      },
+      "116.0": {
+        "image": "browsers/firefox:116.0",
+        "port": "4444",
+        "path": "/wd/hub"
+      },
+      "115.0": {
+        "image": "browsers/firefox:115.0",
+        "port": "4444",
+        "path": "/wd/hub"
+      }
+    }
+  },
+  "MicrosoftEdge": {
+    "default": "latest",
+    "versions": {
+      "latest": {
+        "image": "browsers/edge:latest",
+        "port": "4444"
+      },
+      "114.0": {
+        "image": "browsers/edge:114.0",
+        "port": "4444"
+      },
+      "113.0": {
+        "image": "browsers/edge:113.0",
+        "port": "4444"
+      },
+      "112.0": {
+        "image": "browsers/edge:112.0",
+        "port": "4444"
+      },
+      "111.0": {
+        "image": "browsers/edge:111.0",
+        "port": "4444"
+      }
+    }
+  },
+  "safari": {
+    "default": "15.0",
+    "versions": {
+      "15.0": {
+        "image": "browsers/safari:15.0",
+        "port": "4444"
+      },
+      "14.0": {
+        "image": "browsers/safari:14.0",
+        "port": "4444"
+      },
+      "13.0": {
+        "image": "browsers/safari:13.0",
+        "port": "4444"
+      }
+    }
+  }
+}

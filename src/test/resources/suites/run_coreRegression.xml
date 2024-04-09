@@ -1,0 +1,14 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+
+<suite name="Suite1" verbose="1">
+    <listeners>
+        <listener class-name="infrastructure.listeners.retry.common.CucumberAnnotationTransformer"/>
+    </listeners>
+
+    <test name="CoreRegression_Tests">
+        <parameter name="suite" value="CoreRegression_Tests"/>
+        <classes>
+            <class name="testRuns.CoreRegressionTestRun"/>
+        </classes>
+    </test>
+</suite>
