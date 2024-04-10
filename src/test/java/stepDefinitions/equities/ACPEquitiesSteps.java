@@ -4,6 +4,7 @@ import infrastructure.Investing;
 import infrastructure.enums.Edition;
 import infrastructure.enums.UserStatus;
 import infrastructure.exceptions.InvestingException;
+import infrastructure.threadlocals.ThreadLocalDriver;
 import io.cucumber.java.ParameterType;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -17,11 +18,11 @@ import static io.qameta.allure.Allure.step;
 
 public class ACPEquitiesSteps {
 
-    @Inject
-    Investing investing;
-
-    @Inject
-    BaseInstrumentPage equityInstrumentPage;
+//    @Inject
+//    Investing investing;
+//
+//    @Inject
+//    BaseInstrumentPage equityInstrumentPage;
 
     @ParameterType("SIGNED_IN|SIGNED_OUT")
     public UserStatus userStatus(String text){
@@ -47,7 +48,7 @@ public class ACPEquitiesSteps {
         switch (userStatus) {
             case SIGNED_OUT -> {
                 aLoggedOutUser();
-                goToPage(investing, page, edition);
+                goToPage(ThreadLocalDriver.get(), page, edition);
             }
             default -> throw new InvestingException("Unexpected value for the user state: ".concat(userStatus.name()));
         }
@@ -55,6 +56,7 @@ public class ACPEquitiesSteps {
 
     @Then("company title should be {string} and not stock")
     public void getAndCompareCompanyHeadline(String equityTitle) {
+        BaseInstrumentPage equityInstrumentPage = new BaseInstrumentPage(ThreadLocalDriver.get());
         Assert.assertEquals(equityInstrumentPage.getTitle(), equityTitle, "Equity titles do not match");
     }
 }
