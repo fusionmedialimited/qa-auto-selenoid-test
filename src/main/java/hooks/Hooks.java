@@ -1,5 +1,6 @@
 package hooks;
 
+import infrastructure.Investing;
 import infrastructure.logger.Log;
 import infrastructure.threadlocals.*;
 import io.cucumber.java.After;
@@ -15,6 +16,11 @@ public class Hooks {
         ThreadLocalScenario.put(scenario);
         Log.prepareContext();
         clearThreadLocalData();
+    }
+
+    @Before(order = 2)
+    public void beforeInitWebDriver() {
+        ThreadLocalDriver.put(new Investing());
     }
 
 

@@ -12,13 +12,13 @@ public class PicoDependencyInjector implements ObjectFactory {
 
     public PicoDependencyInjector() {
         //driver
-        addClass(Investing.class);
+//        addClass(Investing.class);
 
         //hooks
         addClass(Hooks.class);
 
         //Equities
-        addClass(BaseInstrumentPage.class);
+//        addClass(BaseInstrumentPage.class);
     }
 
     @Override

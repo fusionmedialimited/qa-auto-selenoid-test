@@ -37,73 +37,78 @@ public class Investing implements WebDriver, Disposable {
     @Getter
     private String remoteSessionId;
 
-    public synchronized WebDriver getDelegate() {
-        if (delegate == null) {
-            String run = WebEnvParams.getRunParam();
+    public Investing() {
+        String run = WebEnvParams.getRunParam();
 
-            String browser = ThreadLocalScenario.containsTag("@MobileSite")
-                            ? "chromemobile"
-                            : WebEnvParams.getBrowserParam();
+        String browser = ThreadLocalScenario.containsTag("@MobileSite")
+                ? "chromemobile"
+                : WebEnvParams.getBrowserParam();
 
-            String version = ThreadLocalScenario.containsTag("@Profile")
-                            ? "profile"
-                            : WebEnvParams.getTagParam();
+        String version = ThreadLocalScenario.containsTag("@Profile")
+                ? "profile"
+                : WebEnvParams.getTagParam();
 
 
-            switch (run) {
-                case "local" -> {
-                    if (WebEnvParams.getSelenoidLocalParam())
-                    {
-                        MutableCapabilities options = getCapability(browser, version, run);
-                        Log.info("Provided browser options are: " + options.toJson().toString());
-
-                        try {
-                            delegate = new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), options);
-                        } catch (Exception cause) {
-                            throw new InvestingException("Couldn't init remote driver local!", cause);
-                        }
-                    } else switch (browser) {
-                        case "chrome", "chromemobile" -> {
-                            WebDriverManager.chromedriver().setup();
-                            delegate = new ChromeDriver((ChromeOptions) getCapability(browser, version, run));
-                        }
-                        case "firefox" -> {
-                            WebDriverManager.firefoxdriver().setup();
-                            delegate = new FirefoxDriver((FirefoxOptions) getCapability(browser, version, run));
-                        }
-                        case "safari" -> {
-                            WebDriverManager.safaridriver().setup();
-                            delegate = new SafariDriver((SafariOptions) getCapability(browser, version, run));
-                        }
-                        case "edge" -> {
-                            WebDriverManager.edgedriver().setup();
-                            delegate = new EdgeDriver((EdgeOptions) getCapability(browser, version, run));
-                        }
-                    }
-                }
-                case "cloud" -> {
+        switch (run) {
+            case "local" -> {
+                if (WebEnvParams.getSelenoidLocalParam())
+                {
                     MutableCapabilities options = getCapability(browser, version, run);
                     Log.info("Provided browser options are: " + options.toJson().toString());
 
                     try {
-                        delegate = new RemoteWebDriver(new URL("http://selenoid:4444/wd/hub"), options);
-                        // session id is parsed right after WebDriver initialization
-                        // to avoid errors while attaching video after the test
-                        // in case when WebDriver instance isn't acceptable
-                        setRemoteSessionId();
-                    } catch (MalformedURLException e) {
-                        Log.error("A malformed URL issue occurred: " + e);
+                        delegate = new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), options);
+                    } catch (Exception cause) {
+                        throw new InvestingException("Couldn't init remote driver local!", cause);
                     }
+                } else switch (browser) {
+                    case "chrome", "chromemobile" -> {
+                        WebDriverManager.chromedriver().setup();
+                        delegate = new ChromeDriver((ChromeOptions) getCapability(browser, version, run));
+                    }
+                    case "firefox" -> {
+                        WebDriverManager.firefoxdriver().setup();
+                        delegate = new FirefoxDriver((FirefoxOptions) getCapability(browser, version, run));
+                    }
+                    case "safari" -> {
+                        WebDriverManager.safaridriver().setup();
+                        delegate = new SafariDriver((SafariOptions) getCapability(browser, version, run));
+                    }
+                    case "edge" -> {
+                        WebDriverManager.edgedriver().setup();
+                        delegate = new EdgeDriver((EdgeOptions) getCapability(browser, version, run));
+                    }
+                    default -> throw new InvestingException("Couldn't initialize WebDriver instance because of unexpected value in the 'browser' property: " + run);
+                }
+            }
+            case "cloud" -> {
+                MutableCapabilities options = getCapability(browser, version, run);
+                Log.info("Provided browser options are: " + options.toJson().toString());
+
+                try {
+                    delegate = new RemoteWebDriver(new URL("http://selenoid:4444/wd/hub"), options);
+                    // session id is parsed right after WebDriver initialization
+                    // to avoid errors while attaching video after the test
+                    // in case when WebDriver instance isn't acceptable
+                    setRemoteSessionId();
+                } catch (MalformedURLException e) {
+                    Log.error("A malformed URL issue occurred: " + e);
                 }
             }
 
-            if (browser.equals("chromemobile"))
-                delegate.manage().window().setSize(new Dimension(600, 1000));
-            else
-                delegate.manage().window().maximize();
-
-            ThreadLocalDriver.put(this);
+            default -> throw new InvestingException("Couldn't initialize WebDriver instance because of unexpected value in the 'run' property: " + run);
         }
+
+        if (browser.equals("chromemobile"))
+            delegate.manage().window().setSize(new Dimension(600, 1000));
+        else
+            delegate.manage().window().maximize();
+    }
+
+    public synchronized WebDriver getDelegate() {
+        if (delegate == null)
+            throw new InvestingException("Couldn't get WebDriver instance: Investing instance is initialized, but WebDriver instance not!");
+
         return delegate;
     }
 
