@@ -55,7 +55,7 @@ public class NavigationUtilities {
                 if (getNoCashParam().equals("0"))
                     driver.get(url);
                 else
-                    driver.get(url.concat(NO_CASH_PARAM.concat(getNoCashParam())));
+                    driver.getDelegate().get(url.concat(NO_CASH_PARAM.concat(getNoCashParam())));
             } catch (Exception cause) {
                 throw new InvestingException("Couldn't open the " + url + " url!", cause);
             }
