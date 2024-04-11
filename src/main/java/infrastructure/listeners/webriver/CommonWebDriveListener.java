@@ -39,19 +39,19 @@ public class CommonWebDriveListener implements WebDriverListener {
                 // Privacy / CCPA popup processing
                 WDListenerPopupHelper.detectAndClosePrivacyCcpaPopup(url);
                 // prevent InvestingPro promo banner
-                WDListenerCookieHelper.modifyProPromoPopupCookie();
+//                WDListenerCookieHelper.modifyProPromoPopupCookie();
                 // prevent InvestingPro Sale banner
-                WDListenerCookieHelper.modifyProSalePromoPopupCookies(page);
+//                WDListenerCookieHelper.modifyProSalePromoPopupCookies(page);
                 // prevent ProPicks banner
-                WDListenerCookieHelper.modifyProPicksPromoPopupCookies(page);
+//                WDListenerCookieHelper.modifyProPicksPromoPopupCookies(page);
                 // prevent ProTips banner
-                WDListenerCookieHelper.addPromoBannerAutoCookie();
+//                WDListenerCookieHelper.addPromoBannerAutoCookie();
 
-                if (WDListenerCookieHelper.cookiesModifiedFlag.get()) {
+//                if (WDListenerCookieHelper.cookiesModifiedFlag.get()) {
                     // refresh page if any cookie for any banner was modified
-                    ThreadLocalDriver.get().navigate().refresh();
-                    WDListenerCookieHelper.cookiesModifiedFlag.set(false);
-                }
+//                    ThreadLocalDriver.get().navigate().refresh();
+//                    WDListenerCookieHelper.cookiesModifiedFlag.set(false);
+//                }
             }
         } catch (Exception cause) {
             allureAttachText("error","Couldn't complete afterGet steps with WebDriver listener:\n" + cause);
