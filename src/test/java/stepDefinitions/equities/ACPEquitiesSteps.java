@@ -1,30 +1,21 @@
 package stepDefinitions.equities;
 
-import infrastructure.Investing;
 import infrastructure.enums.Edition;
 import infrastructure.enums.UserStatus;
 import infrastructure.exceptions.InvestingException;
-import infrastructure.listeners.webriver.helpers.WDListenerPopupHelper;
 import infrastructure.threadlocals.ThreadLocalDriver;
-import infrastructure.threadlocals.ThreadLocalPopups;
 import io.cucumber.java.ParameterType;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import org.apache.commons.lang3.EnumUtils;
-import org.picocontainer.annotations.Inject;
 import org.testng.Assert;
 import pageObjects.pages.equities.BaseInstrumentPage;
 
 import static infrastructure.utilities.NavigationUtilities.goToPage;
+import static infrastructure.utilities.PopupUtilities.closePrivacyPopUp;
 import static io.qameta.allure.Allure.step;
 
 public class ACPEquitiesSteps {
-
-//    @Inject
-//    Investing investing;
-//
-//    @Inject
-//    BaseInstrumentPage equityInstrumentPage;
 
     @ParameterType("SIGNED_IN|SIGNED_OUT")
     public UserStatus userStatus(String text){
@@ -51,12 +42,7 @@ public class ACPEquitiesSteps {
             case SIGNED_OUT -> {
                 aLoggedOutUser();
                 goToPage(ThreadLocalDriver.get(), page, edition);
-
-                // Privacy / CCPA popup processing
-                if (!ThreadLocalPopups.getPrivacyCcpaPopupShownFlag()) {
-                    String url = ThreadLocalDriver.get().getCurrentUrl();
-                    WDListenerPopupHelper.detectAndClosePrivacyCcpaPopup(url);
-                }
+                closePrivacyPopUp();
             }
             default -> throw new InvestingException("Unexpected value for the user state: ".concat(userStatus.name()));
         }

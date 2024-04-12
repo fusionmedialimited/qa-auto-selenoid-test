@@ -25,7 +25,7 @@ public class WaitUtilities {
      */
     public static FluentWait<WebDriver> customWait(Duration duration) {
         Log.info("Waiting for " + duration.toMillis() + " ms");
-        return new WebDriverWait(ThreadLocalDriver.get().getDelegate(), duration);
+        return new WebDriverWait(ThreadLocalDriver.get().getDriver(), duration);
     }
 
     /**

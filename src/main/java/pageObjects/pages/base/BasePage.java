@@ -38,7 +38,7 @@ public class BasePage {
 
     protected <T> WebElement getAndWaitForElement(Investing driver, @NonNull T elementAttr, Duration duration) {
         try {
-            WebDriverWait wait = new WebDriverWait(driver.getDelegate(), duration);
+            WebDriverWait wait = new WebDriverWait(driver.getDriver(), duration);
 
             if (elementAttr instanceof By) {
                 return Objects.requireNonNull(wait.until(ExpectedConditions.visibilityOfElementLocated((By) elementAttr)));
