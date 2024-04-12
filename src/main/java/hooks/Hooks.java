@@ -14,7 +14,7 @@ public class Hooks {
     @Before(order = 1)
     public void beforePrepareThreadLocalVariables(Scenario scenario) {
         ThreadLocalScenario.put(scenario);
-        Log.prepareContext();
+//        Log.prepareContext();
         clearThreadLocalData();
     }
 
