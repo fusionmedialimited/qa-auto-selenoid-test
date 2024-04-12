@@ -4,16 +4,12 @@ import infrastructure.Investing;
 import infrastructure.constants.ConstantProvider;
 import infrastructure.enums.Edition;
 import infrastructure.exceptions.InvestingException;
-import infrastructure.threadlocals.ThreadLocalDriver;
-import infrastructure.threadlocals.ThreadLocalEdition;
-import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Field;
 
 import static infrastructure.ReportAttachments.textWithCopyToLog;
 import static infrastructure.constants.ConstantProvider.WebConstant.Page.HOME_NO_EDITION_URL;
 import static infrastructure.constants.ConstantProvider.WebConstant.Page.NO_CASH_PARAM;
-import static infrastructure.constants.ConstantProvider.WebConstant.Page.PRO_PAGE;
 import static infrastructure.constants.WebEnvParams.getNoCashParam;
 import static infrastructure.enums.LogLevel.INFO;
 import static io.qameta.allure.Allure.step;
@@ -76,35 +72,8 @@ public class NavigationUtilities {
                 .concat(".")
                 .concat(HOME_NO_EDITION_URL).concat(page);
 
-        ThreadLocalEdition.set(edition);
         goToURL(driver, url);
     }
 
-    public static boolean isPagePro(String page) {
-        return StringUtils.startsWith(extractPageFromConst(page),PRO_PAGE + "/");
-    }
-
-    /**
-     * Extract page without domain from the provided URL
-     */
-    public static String getPageFromUrl(String url) {
-        if (!url.contains(HOME_NO_EDITION_URL)) {
-            throw new IllegalArgumentException(
-                    String.format("Couldn't get page, because URL \"%s\" doesn't contain domain \"%s\"!", url, HOME_NO_EDITION_URL));
-        }
-
-        String currentUrl = StringUtils.removeEnd(url, "/");
-        String domainPattern =  "^.*".concat(HOME_NO_EDITION_URL.replace(".", "\\."));
-
-        return  currentUrl.replaceAll(domainPattern,"");
-    }
-
-    /**
-     * Get current page without domain
-     */
-    public static String getCurrentPage() {
-        String url = ThreadLocalDriver.get().getCurrentUrl();
-        return getPageFromUrl(url);
-    }
 
 }

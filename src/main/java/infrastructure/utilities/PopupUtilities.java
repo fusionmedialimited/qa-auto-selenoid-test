@@ -75,14 +75,4 @@ public class PopupUtilities {
         );
     }
 
-    /**
-     * close one of the InvestingPro Promo Pop-ups:
-     * - Black Friday Sale
-     * - ProPicks
-     */
-    public static boolean closeProPromoPopup() {
-        return step(textWithCopyToLog(INFO, "Closing InvestingPro Promo Pop-up"), () ->
-                closePopup(ELEMENT_WAITING_DURATION_SMALL, proPromoPopup, proPromoPopupCloseBtn)
-        );
-    }
 }

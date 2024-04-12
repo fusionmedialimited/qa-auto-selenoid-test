@@ -4,8 +4,10 @@ import infrastructure.constants.WebEnvParams;
 import infrastructure.exceptions.InvestingException;
 import infrastructure.logger.Log;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import lombok.Getter;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.MutableCapabilities;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -22,9 +24,6 @@ import static infrastructure.CapabilitiesProvider.getCapability;
 public class Investing implements WebDriver, Disposable {
 
     public WebDriver delegate;
-
-    @Getter
-    private String remoteSessionId;
 
     public Investing() {
         String run = WebEnvParams.getRunParam();
@@ -50,7 +49,6 @@ public class Investing implements WebDriver, Disposable {
                     // session id is parsed right after WebDriver initialization
                     // to avoid errors while attaching video after the test
                     // in case when WebDriver instance isn't acceptable
-                    setRemoteSessionId();
                 } catch (MalformedURLException e) {
                     Log.error("A malformed URL issue occurred: " + e);
                 }
@@ -67,14 +65,6 @@ public class Investing implements WebDriver, Disposable {
             throw new InvestingException("Couldn't get WebDriver instance: Investing instance is initialized, but WebDriver instance not!");
 
         return delegate;
-    }
-    
-    private void setRemoteSessionId() {
-        try {
-            this.remoteSessionId = ((RemoteWebDriver) this.delegate).getSessionId().toString();
-        } catch (Exception cause) {
-            throw new InvestingException("Couldn't get ID of the Remote WebDriver session!", cause);
-        }
     }
 
     @Override

@@ -6,12 +6,11 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
-import pageObjects.interfaces.equities.BaseInstrumentMethods;
 import pageObjects.pages.base.BasePage;
 
 import static infrastructure.allure.AllureAttachments.allureAttachText;
 
-public class BaseInstrumentPage extends BasePage implements BaseInstrumentMethods {
+public class BaseInstrumentPage extends BasePage {
 
     @FindBy(tagName = "h1")
     protected WebElement pageTitle;

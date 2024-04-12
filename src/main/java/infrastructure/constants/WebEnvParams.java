@@ -1,12 +1,9 @@
 package infrastructure.constants;
 
 import infrastructure.enums.Edition;
-import infrastructure.threadlocals.ThreadLocalEdition;
 import org.apache.commons.lang3.EnumUtils;
 
 import java.util.Locale;
-
-import static infrastructure.constants.ConstantProvider.WebConstant.Page.CANARY_SUB_DOMAIN;
 
 public class WebEnvParams {
 
@@ -64,33 +61,6 @@ public class WebEnvParams {
         return EnumUtils.getEnumIgnoreCase(Edition.class, getEditionParam());
     }
 
-    public static String getUrlParam() {
-        String url;
-        if (System.getProperty("url") != null)
-            url = !System.getProperty("url").isEmpty() ? System.getProperty("url").toLowerCase(Locale.ROOT) : urlValue;
-        else
-            url = urlValue;
-
-        return url.endsWith("/") ? url.substring(0, url.length() - 1) : url ;
-    }
-
-    public static boolean isOnCanary() {
-        return getUrlParam().contains(CANARY_SUB_DOMAIN);
-    }
-
-    public static String getHomeURL() {
-        String homeURL = "https://";
-        if (getBrowserParam().equalsIgnoreCase("chromemobile")) {
-            homeURL += "m";
-            if (!ThreadLocalEdition.get().equals(Edition.WWW))
-                homeURL += "." + ThreadLocalEdition.get().toStringLowerCased();
-        } else
-            homeURL += ThreadLocalEdition.get().toStringLowerCased();
-
-        homeURL += "." + WebEnvParams.getUrlParam();
-        return homeURL;
-    }
-
     public static String getNoCashParam() {
         String noCash;
         if (System.getProperty("no_cash") != null)
@@ -99,18 +69,6 @@ public class WebEnvParams {
             noCash = noCashValue;
 
         return noCash;
-    }
-
-    public static int getRetriesNumberParam() {
-        String tries = System.getProperty("tries.count");
-        return tries == null
-                ? 1
-                : Integer.parseInt(tries);
-    }
-
-    public static boolean getSelenoidLocalParam() {
-        String selenoidLocal = System.getProperty("selenoid");
-        return Boolean.parseBoolean(selenoidLocal);
     }
 
     public static boolean getHeadlessParam() {

@@ -1,7 +1,6 @@
 package infrastructure.utilities;
 
 import infrastructure.exceptions.InvestingException;
-import infrastructure.logger.Log;
 import infrastructure.threadlocals.ThreadLocalDriver;
 import org.apache.commons.lang.IllegalClassException;
 import org.openqa.selenium.*;
@@ -9,7 +8,6 @@ import org.openqa.selenium.*;
 import java.time.Duration;
 
 import static infrastructure.constants.ConstantProvider.WebConstant.TimeoutDuration.LONG_CLICK_DURATION;
-import static infrastructure.constants.ConstantProvider.WebConstant.TimeoutDuration.MINIMAL_WAITING_DURATION;
 import static infrastructure.utilities.WaitUtilities.waitForVisibility;
 import static infrastructure.utilities.WaitUtilities.waitUntil;
 import static io.qameta.allure.Allure.step;
@@ -65,29 +63,6 @@ public class BaseUtilities {
         } catch (Exception cause) {
             throw new InvestingException("Couldn't click on " + elementAttr + " element!", cause);
         }
-    }
-
-    public static boolean isCookiePresented(String name) {
-        Log.info(String.format("Check if cookie with name \"%s\" is presented in the browser storage", name));
-
-        try {
-            return ThreadLocalDriver.get().manage().getCookieNamed(name) != null;
-        } catch (Exception cause) {
-            throw new InvestingException (String.format("Couldn't check if cookie with name \"%s\" is presented in the browser storage!", name), cause);
-        }
-    }
-
-    public static boolean isCookiePresented(Cookie cookie, Duration duration) {
-        try {
-            waitUntil(duration, drv -> isCookiePresented(cookie.getName()));
-            return true;
-        } catch (TimeoutException ignore) {}
-
-        return false;
-    }
-
-    public static boolean isCookiePresented(Cookie cookie) {
-        return isCookiePresented(cookie, MINIMAL_WAITING_DURATION);
     }
 
     /**
