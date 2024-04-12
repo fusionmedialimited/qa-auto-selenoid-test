@@ -45,7 +45,6 @@ services:
       - TEST_TAG=${TEST_TAG}
       - NO_CASH=${NO_CASH}
       - THREADS=${THREADS}
-      - TRIES=${TRIES}
     build:
       context: .
       dockerfile: Dockerfile-web

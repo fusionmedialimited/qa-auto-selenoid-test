@@ -19,7 +19,6 @@
         <cucumber.version>6.11.0</cucumber.version>
 
         <threads.count>4</threads.count>
-        <tries.count>1</tries.count>
 
         <!--suppress UnresolvedMavenProperty -->
         <suite>${env.SUITE}</suite>
@@ -37,8 +36,6 @@
         <nocash>${env.NO_CASH}</nocash>
         <!--suppress UnresolvedMavenProperty -->
         <threads>${env.THREADS}</threads>
-        <!--suppress UnresolvedMavenProperty -->
-        <tries>${env.TRIES}</tries>
         <!--suppress UnresolvedMavenProperty -->
         <headless>${env.HEADLESS}</headless>
 
@@ -98,8 +95,6 @@
                             <nocash>${no_cash}</nocash>
                             <!--suppress UnresolvedMavenProperty -->
                             <threads>${threads}</threads>
-                            <!--suppress UnresolvedMavenProperty -->
-                            <tries>${tries}</tries>
                             <!--suppress UnresolvedMavenProperty -->
                             <headless>${headless}</headless>
 

@@ -75,7 +75,6 @@ properties([
                 string(name: 'URL', defaultValue: "investing.com", description: 'Site Url' ),
                 choice(name: 'EDITION', choices: ['www', 'qa-automation-test.qa', 'de', 'es', 'fr', 'it', 'nl', 'pl', 'br', 'pt', 'tr', 'ru', 'kr', 'jp', 'cn', 'hk', 'sa', 'se', 'gr', 'id', 'th', 'vn', 'fi', 'il', 'au', 'ca', 'in', 'ng', 'ph', 'za', 'hi', 'uk', 'ms', 'mx'], description: 'Choose An Edition'),
                 choice(name: 'THREADS', choices: ['4', '3', '2', '1'], description: 'Number Of Threads'),
-                choice(name: 'TRIES', choices: ['1', '2', '3'], description: 'Number Of Tries For Failing Tests'),
                 choice(name: "SUITE_OR_TEST", choices:['Test Suite', 'Specific Test(s)'], description: "Specify that would you like to run an existing Test Suite or a specific Test"),
                 [$class: 'DynamicReferenceParameter',
                  choiceType: 'ET_FORMATTED_HTML',
@@ -105,7 +104,7 @@ properties([
         ])
 ])
 
-def SUITE, TESTS_TAGS, SELENOID_UI_IP, SUMMARY, EXECUTION_KEY
+def SUITE, TESTS_TAGS, SELENOID_UI_IP
 
 pipeline {
     agent {label 'docker-slave && eu-node'}
@@ -194,11 +193,11 @@ pipeline {
                     }
                 }
 
-                echo "Run params: BROWSER=\033[32m${BROWSER}\033[0m TAG=\033[32m${TAG}\033[0m SUITE=\033[32mrun_coreRegression\033[0m URL=\033[32m${params.URL}\033[0m EDITION=\033[32m${params.EDITION}\033[0m THREADS=\033[32m${THREADS}\033[0m TRIES=\033[32m${TRIES}\033[0m"
+                echo "Run params: BROWSER=\033[32m${BROWSER}\033[0m TAG=\033[32m${TAG}\033[0m SUITE=\033[32mrun_coreRegression\033[0m URL=\033[32m${params.URL}\033[0m EDITION=\033[32m${params.EDITION}\033[0m THREADS=\033[32m${THREADS}\033[0m"
                 echo "\033[34mStarting Docker Compose...\033[0m"
                 sh "mkdir -p ./allure-results"
                 sh "mkdir -p ./reports"
-                sh "BROWSER=${BROWSER} TAG=${TAG} SUITE=${SUITE} URL=${params.URL} EDITION=${params.EDITION} THREADS=${params.THREADS} TRIES=${params.TRIES} SQUAD=CoreWeb docker-compose -f docker-compose-web.yml up --force-recreate --build --abort-on-container-exit --exit-code-from webmvntest"
+                sh "BROWSER=${BROWSER} TAG=${TAG} SUITE=${SUITE} URL=${params.URL} EDITION=${params.EDITION} THREADS=${params.THREADS} docker-compose -f docker-compose-web.yml up --force-recreate --build --abort-on-container-exit --exit-code-from webmvntest"
                 echo "\033[34mStopping Docker Compose...\033[0m"
                 sh 'docker-compose -f docker-compose-web.yml down'
             }
