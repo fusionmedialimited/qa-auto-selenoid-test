@@ -65,13 +65,9 @@ public class CucumberRetryListener implements IRetryAnalyzer {
                         retryNumber.intValue()
                 ));
 
-                Log.incTryCounter();
-
                 return true;
             }
         } catch (Exception ignore) {}
-
-        Log.resetTryCounter();
 
         return false;
     }
