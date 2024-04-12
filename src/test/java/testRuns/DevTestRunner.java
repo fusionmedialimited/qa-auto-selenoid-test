@@ -17,14 +17,7 @@ import org.testng.annotations.Listeners;
         tags = "@CT-6971"
 )
 
-@Listeners({CucumberAnnotationTransformer.class})
 public class DevTestRunner extends AbstractTestNGCucumberTests {
-
-    @BeforeSuite
-    public void before() {
-        // for the local runs
-//         System.setProperty("browser", "safari");
-    }
 
     @Override
     @DataProvider(parallel = true)

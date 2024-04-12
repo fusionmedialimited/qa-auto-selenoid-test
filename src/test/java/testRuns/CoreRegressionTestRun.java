@@ -15,7 +15,7 @@ import org.testng.annotations.Listeners;
         tags = "@CoreRegression" // insert your specific tag here - example is already inserted
 )
 
-@Listeners({CucumberAnnotationTransformer.class})
+
 public class CoreRegressionTestRun extends AbstractTestNGCucumberTests {
 
     @Override
