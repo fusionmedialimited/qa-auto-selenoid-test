@@ -8,7 +8,6 @@ public class WebEnvParams {
     private static final String tagValue = "latest";
     private static final String runValue = "local";
     private static final String browserValue = "chrome";
-    private static final String noCashValue = "0";
 
     public static String getTagParam() {
         String tag;
@@ -39,16 +38,6 @@ public class WebEnvParams {
             browser = browserValue;
 
         return browser;
-    }
-
-    public static String getNoCashParam() {
-        String noCash;
-        if (System.getProperty("no_cash") != null)
-            noCash = !System.getProperty("no_cash").isEmpty() ? System.getProperty("no_cash") : noCashValue;
-        else
-            noCash = noCashValue;
-
-        return noCash;
     }
 
     public static boolean getHeadlessParam() {

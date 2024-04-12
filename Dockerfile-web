@@ -6,7 +6,6 @@ ARG URL
 ARG SUITE
 ARG EDITION
 ARG TEST_TAG
-ARG NO_CASH
 ARG THREADS
 
 WORKDIR /
@@ -15,4 +14,4 @@ COPY ./ /usr/src/app/.
 WORKDIR /usr/src/app
 RUN mvn compile
 
-CMD /usr/bin/mvn clean test -Dcucumber.filter.tags="${TEST_TAG}" -Dtag=${TAG} -Dbrowser=${BROWSER} -Dsuite=${SUITE} -Durl=${URL} -Dedition=${EDITION} -Dno_cash=${NO_CASH} -Dthreads.count=${THREADS} -Drun=cloud
+CMD /usr/bin/mvn clean test -Dcucumber.filter.tags="${TEST_TAG}" -Dtag=${TAG} -Dbrowser=${BROWSER} -Dsuite=${SUITE} -Durl=${URL} -Dedition=${EDITION} -Dthreads.count=${THREADS} -Drun=cloud

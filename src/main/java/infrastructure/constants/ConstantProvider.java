@@ -18,7 +18,6 @@ public class ConstantProvider {
 
         public static final class Page {
             public static final String HOME_NO_EDITION_URL = "investing.com";
-            public static final String NO_CASH_PARAM = "?nocache=";
         }
 
         public static final class TimeoutDuration {

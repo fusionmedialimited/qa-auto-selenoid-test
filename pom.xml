@@ -33,8 +33,6 @@
         <!--suppress UnresolvedMavenProperty -->
         <browser>${env.BROWSER}</browser>
         <!--suppress UnresolvedMavenProperty -->
-        <nocash>${env.NO_CASH}</nocash>
-        <!--suppress UnresolvedMavenProperty -->
         <threads>${env.THREADS}</threads>
         <!--suppress UnresolvedMavenProperty -->
         <headless>${env.HEADLESS}</headless>
@@ -91,8 +89,6 @@
                             <test_tag>${test_tag}</test_tag>
                             <!--suppress UnresolvedMavenProperty -->
                             <browser>${browser}</browser>
-                            <!--suppress UnresolvedMavenProperty -->
-                            <nocash>${no_cash}</nocash>
                             <!--suppress UnresolvedMavenProperty -->
                             <threads>${threads}</threads>
                             <!--suppress UnresolvedMavenProperty -->

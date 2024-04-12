@@ -9,8 +9,6 @@ import java.lang.reflect.Field;
 
 import static infrastructure.ReportAttachments.textWithCopyToLog;
 import static infrastructure.constants.ConstantProvider.WebConstant.Page.HOME_NO_EDITION_URL;
-import static infrastructure.constants.ConstantProvider.WebConstant.Page.NO_CASH_PARAM;
-import static infrastructure.constants.WebEnvParams.getNoCashParam;
 import static infrastructure.enums.LogLevel.INFO;
 import static io.qameta.allure.Allure.step;
 
@@ -48,10 +46,7 @@ public class NavigationUtilities {
     public static void goToURL(Investing driver, String url) {
         step(textWithCopyToLog(INFO, "Navigating to the " + url + " url"), () -> {
             try {
-                if (getNoCashParam().equals("0"))
                     driver.get(url);
-                else
-                    driver.getDriver().get(url.concat(NO_CASH_PARAM.concat(getNoCashParam())));
             } catch (Exception cause) {
                 throw new InvestingException("Couldn't open the " + url + " url!", cause);
             }
