@@ -21,4 +21,9 @@ public class Hooks {
         ThreadLocalDriver.put(new Investing());
     }
 
+    @After
+    public void disposeDriver() {
+        ThreadLocalDriver.get().dispose();
+    }
+
 }
