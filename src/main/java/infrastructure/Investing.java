@@ -45,9 +45,6 @@ public class Investing implements WebDriver {
 
                 try {
                     delegate = new RemoteWebDriver(new URL("http://selenoid:4444/wd/hub"), options);
-                    // session id is parsed right after WebDriver initialization
-                    // to avoid errors while attaching video after the test
-                    // in case when WebDriver instance isn't acceptable
                 } catch (MalformedURLException e) {
                     Log.error("A malformed URL issue occurred: " + e);
                 }

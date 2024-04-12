@@ -20,11 +20,6 @@ public class BaseInstrumentPage extends BasePage {
         PageFactory.initElements(new AjaxElementLocatorFactory(driver, 10), this);
     }
 
-    public boolean isTitleDisplayed() {
-        allureAttachText("Instrument page title", "Check visibility");
-        return isDisplayed(driver, pageTitle);
-    }
-
     public String getTitle() {
         allureAttachText("Instrument page title", "Get text");
         return getText(this.driver, getAndWaitForElement(driver, pageTitle));

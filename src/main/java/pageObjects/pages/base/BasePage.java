@@ -21,19 +21,10 @@ public class BasePage {
 
     public BasePage(Investing driver) {
         this.driver = driver;
-        ThreadLocalDriver.put(driver);
     }
 
     public <T> String getText(Investing driver, T elementAttr) {
         return getAndWaitForElement(driver, elementAttr).getText();
-    }
-
-    public <T> boolean isDisplayed(Investing driver, T elementAttr) {
-        try {
-            return getAndWaitForElement(driver, elementAttr).isDisplayed();
-        } catch (TimeoutException | NoSuchElementException | InvestingException ignore) {}
-
-        return false;
     }
 
     protected <T> WebElement getAndWaitForElement(Investing driver, @NonNull T elementAttr, Duration duration) {
