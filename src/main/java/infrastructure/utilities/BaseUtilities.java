@@ -2,7 +2,6 @@ package infrastructure.utilities;
 
 import infrastructure.exceptions.InvestingException;
 import infrastructure.threadlocals.ThreadLocalDriver;
-import org.apache.commons.lang.IllegalClassException;
 import org.openqa.selenium.*;
 
 import java.time.Duration;
@@ -28,7 +27,7 @@ public class BaseUtilities {
 
         Class<?> clazz = elementAttr.getClass();
         if (!(By.class.isAssignableFrom(clazz) || WebElement.class.isAssignableFrom(clazz)))
-            throw new IllegalClassException("Expected instance of By locator or WebElement, but found: " + clazz.getSimpleName());
+            throw new InvestingException("Expected instance of By locator or WebElement, but found: " + clazz.getSimpleName());
     }
 
     /**

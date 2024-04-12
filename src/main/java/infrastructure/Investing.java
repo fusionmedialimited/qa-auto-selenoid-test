@@ -11,7 +11,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.picocontainer.Disposable;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -21,7 +20,7 @@ import java.util.Set;
 import static infrastructure.CapabilitiesProvider.getCapability;
 
 
-public class Investing implements WebDriver, Disposable {
+public class Investing implements WebDriver {
 
     public WebDriver delegate;
 
@@ -133,7 +132,6 @@ public class Investing implements WebDriver, Disposable {
         return getDriver().manage();
     }
 
-    @Override
     public void dispose() {
         Log.info("Driver TearDown");
 

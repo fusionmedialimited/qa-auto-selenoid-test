@@ -1,9 +1,6 @@
 package infrastructure.allure;
 
 import infrastructure.logger.Log;
-import okhttp3.Request;
-import okhttp3.ResponseBody;
-import retrofit2.Response;
 
 public class AllureAttachments {
 

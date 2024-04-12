@@ -3,7 +3,6 @@ package infrastructure.allure;
 import infrastructure.exceptions.InvestingException;
 import infrastructure.functional.PredicateDescribed;
 import infrastructure.utilities.ReflectionUtils;
-import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -42,7 +41,6 @@ public class AllureUtils {
         addAttachment(attachName, message);
     }
 
-    @NotNull
     private static PredicateDescribed<Method> definePredicateToExtractLoggingMethod(String attachName) {
         String logMethodName = switch (attachName.toUpperCase()) {
             case "ERROR" -> "error";
