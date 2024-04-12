@@ -1,17 +1,12 @@
 package infrastructure;
 
-import infrastructure.threadlocals.ThreadLocalScenario;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.edge.EdgeOptions;
-import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.safari.SafariOptions;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import static infrastructure.constants.WebEnvParams.getHeadlessParam;
 
@@ -50,7 +45,6 @@ public class CapabilitiesProvider {
                     chromeOptions.setCapability("browserVersion", version);
 
                     chromeOptions.setCapability("selenoid:options", new HashMap<String, Object>() {{
-                        put("name", ThreadLocalScenario.getName());
                         put("enableLog", true);
                         put("enableVideo", true);
                         put("enableVNC", true);

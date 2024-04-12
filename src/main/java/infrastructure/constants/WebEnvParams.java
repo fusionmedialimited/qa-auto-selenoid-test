@@ -1,8 +1,5 @@
 package infrastructure.constants;
 
-import infrastructure.enums.Edition;
-import org.apache.commons.lang3.EnumUtils;
-
 import java.util.Locale;
 
 public class WebEnvParams {
@@ -11,8 +8,6 @@ public class WebEnvParams {
     private static final String tagValue = "latest";
     private static final String runValue = "local";
     private static final String browserValue = "chrome";
-    private static final String editionValue = "www";
-    private static final String urlValue = "investing.com";
     private static final String noCashValue = "0";
 
     public static String getTagParam() {
@@ -44,21 +39,6 @@ public class WebEnvParams {
             browser = browserValue;
 
         return browser;
-    }
-
-    public static String getEditionParam() {
-        String edition;
-        if (System.getProperty("edition") != null)
-            edition = !System.getProperty("edition").isEmpty() ? System.getProperty("edition").toLowerCase(Locale.ROOT)
-                    : editionValue;
-        else
-            edition = editionValue;
-
-        return edition;
-    }
-
-    public static Edition getEditionParamAsEnum() {
-        return EnumUtils.getEnumIgnoreCase(Edition.class, getEditionParam());
     }
 
     public static String getNoCashParam() {

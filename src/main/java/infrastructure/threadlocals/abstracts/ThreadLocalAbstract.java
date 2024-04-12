@@ -21,10 +21,6 @@ public abstract class ThreadLocalAbstract<T> {
         this(description, new ThreadLocal<>(), null);
     }
 
-    public ThreadLocalAbstract(String description, T initValue) {
-        this(description, new ThreadLocal<>(), initValue);
-    }
-
     public void put(T value) {
         this.threadLocal.set(value);
         Log.debug(String.format("[HANDLER] Set %s", this));

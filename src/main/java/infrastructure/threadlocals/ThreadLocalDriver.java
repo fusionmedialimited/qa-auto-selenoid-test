@@ -3,8 +3,6 @@ package infrastructure.threadlocals;
 import infrastructure.Investing;
 import infrastructure.threadlocals.abstracts.ThreadLocalAbstract;
 
-import java.time.Duration;
-
 public class ThreadLocalDriver {
     private static final ThreadLocalAbstract<Investing> driver = new ThreadLocalAbstract<>("Driver instance") {};
 

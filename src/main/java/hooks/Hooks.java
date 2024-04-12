@@ -1,28 +1,19 @@
 package hooks;
 
 import infrastructure.Investing;
-import infrastructure.logger.Log;
-import infrastructure.threadlocals.*;
+import infrastructure.threadlocals.ThreadLocalDriver;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
-import io.cucumber.java.Scenario;
-
-import static infrastructure.allure.AllureAttachments.allureAttachText;
 
 public class Hooks {
 
-    @Before(order = 1)
-    public void beforePrepareThreadLocalVariables(Scenario scenario) {
-        ThreadLocalScenario.put(scenario);
-    }
-
-    @Before(order = 2)
-    public void beforeInitWebDriver() {
+    @Before()
+    public void beforeInitDriver() {
         ThreadLocalDriver.put(new Investing());
     }
 
     @After
-    public void disposeDriver() {
+    public void afterDisposeDriver() {
         ThreadLocalDriver.get().dispose();
     }
 
