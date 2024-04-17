@@ -2,7 +2,6 @@
 package pages.equities;
 
 import infrastructure.DriverUtilities;
-import pages.base.BasePage;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
@@ -13,8 +12,9 @@ import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import pages.base.BasePage;
 
-import static infrastructure.ConstantProvider.POPUP_WAITING_DURATION;
+import java.time.Duration;
 
 public class EquityPage extends BasePage {
 
@@ -34,7 +34,7 @@ public class EquityPage extends BasePage {
     }
 
     public void closePrivacyPopup() {
-        FluentWait<WebDriver> wait = new WebDriverWait(DriverUtilities.getDriver(), POPUP_WAITING_DURATION);
+        FluentWait<WebDriver> wait = new WebDriverWait(DriverUtilities.getDriver(), Duration.ofSeconds(5));
         WebElement popup;
 
         // wait for popup
