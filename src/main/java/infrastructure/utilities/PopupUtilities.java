@@ -1,6 +1,7 @@
 package infrastructure.utilities;
 
 import infrastructure.exceptions.InvestingException;
+import io.qameta.allure.Allure;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
@@ -8,12 +9,9 @@ import org.openqa.selenium.TimeoutException;
 
 import java.time.Duration;
 
-import static infrastructure.ReportAttachments.textWithCopyToLog;
-import static infrastructure.allure.AllureAttachments.allureAttachText;
 import static infrastructure.constants.ConstantProvider.WebConstant.TimeoutDuration.*;
 import static infrastructure.constants.GlobalLocators.WebGlobalLocators.PopupLocators.*;
 import static infrastructure.constants.GlobalLocators.WebGlobalLocators.WorkstationLocators.watchlistOnboardingPanel;
-import static infrastructure.enums.LogLevel.INFO;
 import static infrastructure.utilities.BaseUtilities.clickOnVisibleElement;
 import static infrastructure.utilities.WaitUtilities.waitForInvisibility;
 import static infrastructure.utilities.WaitUtilities.waitForVisibility;
@@ -46,10 +44,10 @@ public class PopupUtilities {
 
                 waitForInvisibility(ELEMENT_WAITING_DURATION_SMALL, popup);
 
-                allureAttachText("info", "Pop-up was closed: " + popup.toString());
+                Allure.addAttachment("info", "Pop-up was closed: " + popup.toString());
                 return true;
             } else {
-                allureAttachText("info", "Pop-up was not displayed: " + popup.toString());
+                Allure.addAttachment("info", "Pop-up was not displayed: " + popup.toString());
             }
         } catch (InvestingException | TimeoutException | NoSuchElementException | StaleElementReferenceException ignore) {
         }
@@ -61,7 +59,7 @@ public class PopupUtilities {
      * close the Privacy Pop-up on page init (happens only for European IPs)
      */
     public static void closePrivacyPopUp() {
-        step(textWithCopyToLog(INFO, "Closing Privacy pop-up"), () ->
+        step("Closing Privacy pop-up", () ->
                 closePopup(POPUP_WAITING_DURATION, privacyPopUp, privacyPopUpAcceptBtn)
         );
     }
@@ -70,7 +68,7 @@ public class PopupUtilities {
      * close the CCPA Pop-up on page init (happens only for American IPs)
      */
     public static void closeCCPAPopUp() {
-        step(textWithCopyToLog(INFO, "Closing CCPA pop-up"), () ->
+        step("Closing CCPA pop-up", () ->
             closePopup(POPUP_WAITING_DURATION, ccpaPopUp, ccpaPopUpCloseBtn)
         );
     }

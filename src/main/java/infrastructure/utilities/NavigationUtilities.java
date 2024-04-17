@@ -4,9 +4,7 @@ import infrastructure.Investing;
 import infrastructure.enums.Edition;
 import infrastructure.exceptions.InvestingException;
 
-import static infrastructure.ReportAttachments.textWithCopyToLog;
 import static infrastructure.constants.ConstantProvider.WebConstant.Page.HOME_NO_EDITION_URL;
-import static infrastructure.enums.LogLevel.INFO;
 import static io.qameta.allure.Allure.step;
 
 public class NavigationUtilities {
@@ -18,7 +16,7 @@ public class NavigationUtilities {
      * @param url    : any valid URL
      */
     public static void goToURL(Investing driver, String url) {
-        step(textWithCopyToLog(INFO, "Navigating to the " + url + " url"), () -> {
+        step("Navigating to the " + url + " url", () -> {
             try {
                     driver.get(url);
             } catch (Exception cause) {

@@ -3,78 +3,6 @@ properties([
         parameters([
                 string(name: 'CUSTOM_BUILD_NAME', defaultValue: "", description: 'Give your build some name to distinguish it from the nameless ones (Optional)'),
                 gitParameter(branchFilter: 'origin/(.*)', defaultValue: 'main', name: 'BRANCH', useRepository:'https://github.com/fusionmedialimited/qa-auto-selenoid-test', type: 'PT_BRANCH_TAG', selectedValue: 'DEFAULT', listSize:'0', description: "Specify the branch if needed"),
-                choice(name: 'SPECIFY_BROWSER', choices: ['no', 'yes'], description: 'Do you want to specify the browser? \n(if not specified the browser will be: Chrome latest ver., desktop view)'),
-                [$class: 'DynamicReferenceParameter',
-                 choiceType: 'ET_FORMATTED_HTML',
-                 omitValueField: true,
-                 name: 'BROWSER',
-                 referencedParameters: 'SPECIFY_BROWSER',
-                 script: [
-                         $class: 'GroovyScript',
-                         script: [
-                                 classpath: [],
-                                 sandbox: true,
-                                 script:
-                                         """
-                                 def html
-                                 if (SPECIFY_BROWSER.equals('yes')) {
-                                    html =
-                                    '''
-                                    <select name="value" id="browsers">
-                                      <option value="chrome">Chrome</option>
-                                      <option value="chromemobile">Chrome (Mobile view)</option>
-                                      <option value="firefox">Firefox</option>
-                                      <option value="edge">Edge</option>
-                                      <option value="safari">Safari (Linux ver.)</option>
-                                    </select>
-                                    '''
-                                    return html
-                                 } else {
-                                    html =
-                                    '''
-                                    <select name="value" id="browsers">
-                                      <option value="chrome">Chrome</option>
-                                    </select>
-                                    '''
-                                    return html
-                                 }
-                                 """
-                         ]
-                 ]
-                ],
-                [$class: 'CascadeChoiceParameter',
-                 choiceType: 'PT_SINGLE_SELECT',
-                 description: "Browser version is either 'latest' or the previous major version",
-                 filterLength: 1,
-                 filterable: false,
-                 name: 'TAG',
-                 referencedParameters: 'BROWSER',
-                 script: [
-                         $class: 'GroovyScript',
-                         script: [
-                                 classpath: [],
-                                 sandbox: true,
-                                 script:
-                                         """
-                         switch(BROWSER) {
-                             case ["chrome", "chromemobile"]:
-                                return ["latest", "profile", "122.0", "121.0", "120.0", "119.0"]
-                             case "firefox":
-                                 return ["latest", "118.0", "117.0", "116.0", "115.0"]
-                             case "edge":
-                                 return ["latest", "114.0", "113.0", "112.0", "111.0"]
-                             case "safari":
-                                 return ["15.0", "14.0", "13.0"]
-                             default:
-                                 return ["latest"]
-                         }
-                         """
-                          ]
-                 ]
-                ],
-                string(name: 'URL', defaultValue: "investing.com", description: 'Site Url' ),
-                choice(name: 'EDITION', choices: ['www', 'qa-automation-test.qa', 'de', 'es', 'fr', 'it', 'nl', 'pl', 'br', 'pt', 'tr', 'ru', 'kr', 'jp', 'cn', 'hk', 'sa', 'se', 'gr', 'id', 'th', 'vn', 'fi', 'il', 'au', 'ca', 'in', 'ng', 'ph', 'za', 'hi', 'uk', 'ms', 'mx'], description: 'Choose An Edition'),
-                choice(name: 'THREADS', choices: ['4', '3', '2', '1'], description: 'Number Of Threads'),
                 choice(name: "SUITE_OR_TEST", choices:['Test Suite', 'Specific Test(s)'], description: "Specify that would you like to run an existing Test Suite or a specific Test"),
                 [$class: 'DynamicReferenceParameter',
                  choiceType: 'ET_FORMATTED_HTML',
@@ -116,11 +44,7 @@ pipeline {
         stage('Pull required docker image') {
             steps {
                 script {
-                    // in case of the 'triggered' run the BROWSER and TAG params won't have the default values so we need to assign them
-                    TAG = params.TAG == "" ? "latest" : params.TAG
-                    BROWSER = params.BROWSER == "" ? "chrome" : params.BROWSER == "chromemobile" ? "chrome" : params.BROWSER
-
-                    sh """docker pull browsers/${BROWSER}:${TAG} && docker pull sergeibo/chrome-ublock-profile:release"""
+                    sh """docker pull browsers/chrome:latest"""
                     sh """docker pull selenoid/video-recorder:latest-release"""
                 }
             }
@@ -140,7 +64,7 @@ pipeline {
                     if (!CUSTOM_BUILD_NAME.equals("")) {
                         currentBuild.displayName = "#${env.BUILD_NUMBER} - ${CUSTOM_BUILD_NAME}"
                     }
-                    currentBuild.description = "Browser: ${BROWSER} \nVersion tag: ${TAG} \nURL: ${params.URL} \nSuite: CoreRegression \nEdition: ${params.EDITION}"
+                    currentBuild.description = "${params.SUITE_OR_TEST}"
                 }
 
                 cleanWs()
@@ -193,11 +117,11 @@ pipeline {
                     }
                 }
 
-                echo "Run params: BROWSER=\033[32m${BROWSER}\033[0m TAG=\033[32m${TAG}\033[0m SUITE=\033[32mrun_coreRegression\033[0m URL=\033[32m${params.URL}\033[0m EDITION=\033[32m${params.EDITION}\033[0m THREADS=\033[32m${THREADS}\033[0m"
+                echo "Run params: SUITE=\033[32m${SUITE}"
                 echo "\033[34mStarting Docker Compose...\033[0m"
                 sh "mkdir -p ./allure-results"
                 sh "mkdir -p ./reports"
-                sh "BROWSER=${BROWSER} TAG=${TAG} SUITE=${SUITE} URL=${params.URL} EDITION=${params.EDITION} THREADS=${params.THREADS} docker-compose -f docker-compose-web.yml up --force-recreate --build --abort-on-container-exit --exit-code-from webmvntest"
+                sh "BROWSER=chrome TAG=latest SUITE=${SUITE} docker-compose -f docker-compose-web.yml up --force-recreate --build --abort-on-container-exit --exit-code-from webmvntest"
                 echo "\033[34mStopping Docker Compose...\033[0m"
                 sh 'docker-compose -f docker-compose-web.yml down'
             }

@@ -1,7 +1,5 @@
 package infrastructure.threadlocals.abstracts;
 
-
-import infrastructure.logger.Log;
 import lombok.Getter;
 
 @Getter
@@ -23,7 +21,6 @@ public abstract class ThreadLocalAbstract<T> {
 
     public void put(T value) {
         this.threadLocal.set(value);
-        Log.debug(String.format("[HANDLER] Set %s", this));
     }
 
     public T get() {
@@ -34,13 +31,10 @@ public abstract class ThreadLocalAbstract<T> {
             value = initValue;
         }
 
-        Log.debug(String.format("[HANDLER] Get %s", this));
-
         return value;
     }
 
     public void clear() {
-        Log.debug(String.format("[HANDLER] Remove %s", this));
         threadLocal.remove();
     }
 

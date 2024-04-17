@@ -9,7 +9,7 @@ import org.testng.annotations.DataProvider;
                 "src/test/resources/features.equities"}, //Insert your feature file folder here - example is already inserted
         glue = {"stepDefinitions", "hooks"},
         monochrome = true,
-        plugin = {"io.qameta.allure.cucumber6jvm.AllureCucumber6Jvm", "json:reports/Cucumber.json", "infrastructure.listeners.testEventListener"},
+        plugin = {"io.qameta.allure.cucumber6jvm.AllureCucumber6Jvm", "json:reports/Cucumber.json"},
 
         tags = "@CT-6971"
 )

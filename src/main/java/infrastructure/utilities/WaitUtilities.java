@@ -2,7 +2,6 @@ package infrastructure.utilities;
 
 import infrastructure.constants.ConstantProvider;
 import infrastructure.exceptions.InvestingException;
-import infrastructure.logger.Log;
 import infrastructure.threadlocals.ThreadLocalDriver;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -24,7 +23,6 @@ public class WaitUtilities {
      * @param duration: to wait
      */
     public static FluentWait<WebDriver> customWait(Duration duration) {
-        Log.info("Waiting for " + duration.toMillis() + " ms");
         return new WebDriverWait(ThreadLocalDriver.get().getDriver(), duration);
     }
 
@@ -35,7 +33,6 @@ public class WaitUtilities {
      * @param isTrue   condition to wait
      */
     public static <T> T waitUntil(Duration duration, ExpectedCondition<T> isTrue) {
-        Log.info("Expected condition to wait: " + isTrue.toString());
         return customWait(duration).until(isTrue);
     }
 

@@ -37,13 +37,10 @@ services:
     container_name: mvn-web-test
     network_mode: bridge
     environment:
-      - TAG=${TAG}
-      - BROWSER=${BROWSER}
+      - TAG=latest
+      - BROWSER=chrome
       - SUITE=${SUITE}
-      - URL=${URL}
-      - EDITION=${EDITION}
       - TEST_TAG=${TEST_TAG}
-      - THREADS=${THREADS}
     build:
       context: .
       dockerfile: Dockerfile-web

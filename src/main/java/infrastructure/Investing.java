@@ -2,7 +2,6 @@ package infrastructure;
 
 import infrastructure.constants.WebEnvParams;
 import infrastructure.exceptions.InvestingException;
-import infrastructure.logger.Log;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.MutableCapabilities;
@@ -41,12 +40,11 @@ public class Investing implements WebDriver {
             }
             case "cloud" -> {
                 MutableCapabilities options = getCapability(browser, version, run);
-                Log.info("Provided browser options are: " + options.toJson().toString());
 
                 try {
                     delegate = new RemoteWebDriver(new URL("http://selenoid:4444/wd/hub"), options);
                 } catch (MalformedURLException e) {
-                    Log.error("A malformed URL issue occurred: " + e);
+                    throw new RuntimeException(e);
                 }
             }
 
@@ -130,8 +128,6 @@ public class Investing implements WebDriver {
     }
 
     public void dispose() {
-        Log.info("Driver TearDown");
-
         if (delegate != null)
             delegate.quit();
     }

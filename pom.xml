@@ -18,25 +18,12 @@
         <aspectj.version>1.9.22</aspectj.version>
         <cucumber.version>6.11.0</cucumber.version>
 
-        <threads.count>4</threads.count>
-
         <!--suppress UnresolvedMavenProperty -->
         <suite>${env.SUITE}</suite>
-        <!--suppress UnresolvedMavenProperty -->
-        <url>${env.URL}</url>
-        <!--suppress UnresolvedMavenProperty -->
-        <edition>${env.EDITION}</edition>
         <!--suppress UnresolvedMavenProperty -->
         <run>${env.RUN}</run>
         <!--suppress UnresolvedMavenProperty -->
         <test_tag>${env.TEST_TAG}</test_tag>
-        <!--suppress UnresolvedMavenProperty -->
-        <browser>${env.BROWSER}</browser>
-        <!--suppress UnresolvedMavenProperty -->
-        <threads>${env.THREADS}</threads>
-        <!--suppress UnresolvedMavenProperty -->
-        <headless>${env.HEADLESS}</headless>
-
     </properties>
 
     <build>
@@ -56,12 +43,6 @@
                     <version>3.0.0-M9</version>
                     <configuration>
                         <testFailureIgnore>true</testFailureIgnore>
-                        <properties>
-                            <property>
-                                <name>dataproviderthreadcount</name>
-                                <value>${threads.count}</value>
-                            </property>
-                        </properties>
                         <!--<skipTests>true</skipTests>-->
                         <suiteXmlFiles>
                             <suiteXmlFile>src/test/resources/suites/${suite}.xml</suiteXmlFile>
@@ -74,26 +55,15 @@
 
                         <systemPropertyVariables>
                             <allure.results.directory>allure-results</allure.results.directory>
-                            <allure.link.issue.pattern>https://inv.atlassian.net/browse/{}</allure.link.issue.pattern>
-                            <allure.link.tms.pattern>https://inv.atlassian.net/browse/{}</allure.link.tms.pattern>
+                            <allure.link.issue.pattern>https://qwe.atlassian.net/browse/{}</allure.link.issue.pattern>
+                            <allure.link.tms.pattern>https://qwe.atlassian.net/browse/{}</allure.link.tms.pattern>
 
                             <!--suppress UnresolvedMavenProperty -->
                             <suite>${suite}</suite>
                             <!--suppress UnresolvedMavenProperty -->
-                            <url>${url}</url>
-                            <!--suppress UnresolvedMavenProperty -->
-                            <edition>${edition}</edition>
-                            <!--suppress UnresolvedMavenProperty -->
                             <run>${run}</run>
                             <!--suppress UnresolvedMavenProperty -->
                             <test_tag>${test_tag}</test_tag>
-                            <!--suppress UnresolvedMavenProperty -->
-                            <browser>${browser}</browser>
-                            <!--suppress UnresolvedMavenProperty -->
-                            <threads>${threads}</threads>
-                            <!--suppress UnresolvedMavenProperty -->
-                            <headless>${headless}</headless>
-
                         </systemPropertyVariables>
                     </configuration>
                     <dependencies>
@@ -164,41 +134,6 @@
             <artifactId>lombok</artifactId>
             <version>1.18.32</version>
             <scope>provided</scope>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api -->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>2.23.1</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>2.23.1</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-slf4j-impl -->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-slf4j-impl</artifactId>
-            <version>2.23.1</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-simple -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>2.0.13</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>2.0.13</version>
         </dependency>
     </dependencies>
 
