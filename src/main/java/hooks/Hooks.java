@@ -1,6 +1,6 @@
 package hooks;
 
-import infrastructure.utilities.DriverUtilities;
+import infrastructure.DriverUtilities;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 

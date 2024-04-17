@@ -1,19 +1,17 @@
 package stepDefinitions.equities;
 
+import infrastructure.DriverUtilities;
 import infrastructure.enums.Edition;
 import infrastructure.enums.UserStatus;
-import infrastructure.exceptions.InvestingException;
-import infrastructure.utilities.DriverUtilities;
 import io.cucumber.java.ParameterType;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import org.apache.commons.lang3.EnumUtils;
 import org.testng.Assert;
-import pageObjects.pages.equities.BaseInstrumentPage;
+import pages.equities.EquityPage;
 
-import static infrastructure.utilities.NavigationUtilities.goToPage;
-import static infrastructure.utilities.PopupUtilities.closePrivacyPopUp;
-import static io.qameta.allure.Allure.step;
+import static infrastructure.ConstantProvider.HOME_NO_EDITION_URL;
 
 public class ACPEquitiesSteps {
 
@@ -32,25 +30,29 @@ public class ACPEquitiesSteps {
         return edition;
     }
 
-    private void aLoggedOutUser() {
-        step("User not logged in");
-    }
-
     @Given("a {userStatus} user on the {} page in {edition} edition")
     public void aUserOnThePageInEdition(UserStatus userStatus, String page, Edition edition) {
         switch (userStatus) {
             case SIGNED_OUT -> {
-                aLoggedOutUser();
-                goToPage(DriverUtilities.getDriver(), page, edition);
-                closePrivacyPopUp();
+                String url = "https://"
+                        .concat(edition.toString().toLowerCase())
+                        .concat(".")
+                        .concat(HOME_NO_EDITION_URL).concat(page);
+                DriverUtilities.getDriver().get(url);
             }
-            default -> throw new InvestingException("Unexpected value for the user state: ".concat(userStatus.name()));
+            default -> throw new RuntimeException("Unexpected value for the user state: ".concat(userStatus.name()));
         }
+    }
+
+    @When("user closes Privacy popup")
+    public void userClosesPrivacyPopup() {
+        EquityPage equityInstrumentPage = new EquityPage(DriverUtilities.getDriver());
+        equityInstrumentPage.closePrivacyPopup();
     }
 
     @Then("company title should be {string} and not stock")
     public void getAndCompareCompanyHeadline(String equityTitle) {
-        BaseInstrumentPage equityInstrumentPage = new BaseInstrumentPage(DriverUtilities.getDriver());
+        EquityPage equityInstrumentPage = new EquityPage(DriverUtilities.getDriver());
         Assert.assertEquals(equityInstrumentPage.getTitle(), equityTitle, "Equity titles do not match");
     }
 }

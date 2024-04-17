@@ -8,7 +8,9 @@ Feature: Equities: ACP Equities
     @CT-6971 @CoreRegression
   Scenario Outline: user sees relevant metadata for some companies that have country names in their names
     Given a SIGNED_OUT user on the <page> page in <edition> edition
+    When user closes Privacy popup
     Then company title should be "<company_title>" and not stock
+
     Examples:
       | edition | page                                       | company_title                            |
       | www     | /equities/france-telecom                   | Orange SA (ORAN)                         |
@@ -22,11 +24,14 @@ Feature: Equities: ACP Equities
 #      | mx      | /equities/taiwan-semicond.manufacturing-co | Taiwan Semiconductor Manufacturing (TSM) |
 #      | fr      | /equities/taiwan-semicond.manufacturing-co | Taiwan Semiconductor Manufacturing (TSM) |
 
+
   @tmsLink=CT-6973
     @CT-6973 @CoreRegression
   Scenario Outline: user sees relevant metadata for companies commentary that have country names in their names
     Given a SIGNED_OUT user on the <page> page in <edition> edition
+    When user closes Privacy popup
     Then company title should be "<company_title>" and not stock
+
     Examples:
       | edition | page                                                  | company_title                            |
       | www     | /equities/france-telecom-commentary                   | Orange SA (ORAN)                         |
