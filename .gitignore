@@ -36,3 +36,14 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+.idea/
+test-output/
+target/
+*.iml
+*.DS_Store
+allure-results/*
+!allure-results/.gitkeep
+*.gz
+*.log
+.vscode/

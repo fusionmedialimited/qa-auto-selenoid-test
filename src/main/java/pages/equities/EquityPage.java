@@ -18,9 +18,6 @@ import java.time.Duration;
 
 public class EquityPage extends BasePage {
 
-    @FindBy(id = "onetrust-banner-sdk")
-    private WebElement privacyPopup;
-
     @FindBy(tagName = "h1")
     private WebElement pageTitle;
 
@@ -34,7 +31,7 @@ public class EquityPage extends BasePage {
     }
 
     public void closePrivacyPopup() {
-        FluentWait<WebDriver> wait = new WebDriverWait(DriverUtilities.getDriver(), Duration.ofSeconds(5));
+        FluentWait<WebDriver> wait = new WebDriverWait(this.driver, Duration.ofSeconds(5));
         WebElement popup;
 
         // wait for popup
