@@ -1,12 +1,9 @@
 package pageObjects.pages.base;
 
-import infrastructure.Investing;
 import infrastructure.exceptions.InvestingException;
-import infrastructure.threadlocals.ThreadLocalDriver;
 import lombok.NonNull;
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -17,19 +14,19 @@ import java.util.Objects;
 import static infrastructure.constants.ConstantProvider.WebConstant.TimeoutDuration.ELEMENT_WAITING_DURATION_FULL;
 
 public class BasePage {
-    protected final Investing driver;
+    protected final WebDriver driver;
 
-    public BasePage(Investing driver) {
+    public BasePage(WebDriver driver) {
         this.driver = driver;
     }
 
-    public <T> String getText(Investing driver, T elementAttr) {
+    public <T> String getText(WebDriver driver, T elementAttr) {
         return getAndWaitForElement(driver, elementAttr).getText();
     }
 
-    protected <T> WebElement getAndWaitForElement(Investing driver, @NonNull T elementAttr, Duration duration) {
+    protected <T> WebElement getAndWaitForElement(WebDriver driver, @NonNull T elementAttr, Duration duration) {
         try {
-            WebDriverWait wait = new WebDriverWait(driver.getDriver(), duration);
+            WebDriverWait wait = new WebDriverWait(driver, duration);
 
             if (elementAttr instanceof By) {
                 return Objects.requireNonNull(wait.until(ExpectedConditions.visibilityOfElementLocated((By) elementAttr)));
@@ -41,7 +38,7 @@ public class BasePage {
         }
     }
 
-    protected <T> WebElement getAndWaitForElement(Investing driver, @NonNull T elementAttr) {
+    protected <T> WebElement getAndWaitForElement(WebDriver driver, @NonNull T elementAttr) {
         return getAndWaitForElement(driver, elementAttr, ELEMENT_WAITING_DURATION_FULL);
     }
 

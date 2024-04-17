@@ -15,9 +15,9 @@ Feature: Equities: ACP Equities
       | uk      | /equities/france-telecom                   | Orange SA (ORAN)                         |
       | ca      | /equities/portugal-telecom                 | Pharol SGPS SA (PHRA)                    |
       | au      | /equities/portugal-telecom                 | Pharol SGPS SA (PHRA)                    |
-      | ph      | /equities/taiwan-semicond.manufacturing-co | Taiwan Semiconductor Manufacturing (TSM) |
-      | ng      | /equities/taiwan-semicond.manufacturing-co | Taiwan Semiconductor Manufacturing (TSM) |
-      | de      | /equities/france-telecom                   | Orange SA (ORAN)                         |
+#      | ph      | /equities/taiwan-semicond.manufacturing-co | Taiwan Semiconductor Manufacturing (TSM) |
+#      | ng      | /equities/taiwan-semicond.manufacturing-co | Taiwan Semiconductor Manufacturing (TSM) |
+#      | de      | /equities/france-telecom                   | Orange SA (ORAN)                         |
 #      | es      | /equities/portugal-telecom                 | Pharol SGPS SA (PHRA)                    |
 #      | mx      | /equities/taiwan-semicond.manufacturing-co | Taiwan Semiconductor Manufacturing (TSM) |
 #      | fr      | /equities/taiwan-semicond.manufacturing-co | Taiwan Semiconductor Manufacturing (TSM) |

@@ -1,7 +1,6 @@
 package infrastructure.utilities;
 
 import infrastructure.exceptions.InvestingException;
-import infrastructure.threadlocals.ThreadLocalDriver;
 import org.openqa.selenium.*;
 
 import java.time.Duration;
@@ -73,7 +72,7 @@ public class BaseUtilities {
         try {
             if (isElementDisplayed(element)) {
                 step("Removing element from DOM: " + element, () -> {
-                    JavascriptExecutor js = (JavascriptExecutor) ThreadLocalDriver.get().getDriver();
+                    JavascriptExecutor js = (JavascriptExecutor) DriverUtilities.getDriver();
                     js.executeScript("arguments[0].remove();", element);
                 });
             }
@@ -86,7 +85,7 @@ public class BaseUtilities {
     public static void removeElementFromDOM(By locator, Duration duration) {
         try {
             WebElement element = waitUntil(duration, drv ->
-                    presenceOfElementLocated(locator)).apply(ThreadLocalDriver.get().getDriver());
+                    presenceOfElementLocated(locator)).apply(DriverUtilities.getDriver());
 
             removeElementFromDOM(element);
         } catch (TimeoutException | NoSuchElementException ignore) {}

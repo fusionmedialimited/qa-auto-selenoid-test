@@ -1,8 +1,8 @@
 package infrastructure.utilities;
 
-import infrastructure.Investing;
 import infrastructure.enums.Edition;
 import infrastructure.exceptions.InvestingException;
+import org.openqa.selenium.WebDriver;
 
 import static infrastructure.constants.ConstantProvider.WebConstant.Page.HOME_NO_EDITION_URL;
 import static io.qameta.allure.Allure.step;
@@ -15,7 +15,7 @@ public class NavigationUtilities {
      * @param driver : driver object
      * @param url    : any valid URL
      */
-    public static void goToURL(Investing driver, String url) {
+    public static void goToURL(WebDriver driver, String url) {
         step("Navigating to the " + url + " url", () -> {
             try {
                     driver.get(url);
@@ -32,7 +32,7 @@ public class NavigationUtilities {
      * @param edition : language edition
      * @param page    : page
      */
-    public static void goToPage(Investing driver, String page, Edition edition) {
+    public static void goToPage(WebDriver driver, String page, Edition edition) {
         String url = "https://"
                 .concat(edition.toString().toLowerCase())
                 .concat(".")

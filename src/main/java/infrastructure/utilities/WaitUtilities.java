@@ -2,7 +2,6 @@ package infrastructure.utilities;
 
 import infrastructure.constants.ConstantProvider;
 import infrastructure.exceptions.InvestingException;
-import infrastructure.threadlocals.ThreadLocalDriver;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.FluentWait;
@@ -23,7 +22,7 @@ public class WaitUtilities {
      * @param duration: to wait
      */
     public static FluentWait<WebDriver> customWait(Duration duration) {
-        return new WebDriverWait(ThreadLocalDriver.get().getDriver(), duration);
+        return new WebDriverWait(DriverUtilities.getDriver(), duration);
     }
 
     /**

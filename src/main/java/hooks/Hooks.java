@@ -1,7 +1,6 @@
 package hooks;
 
-import infrastructure.Investing;
-import infrastructure.threadlocals.ThreadLocalDriver;
+import infrastructure.utilities.DriverUtilities;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 
@@ -9,12 +8,12 @@ public class Hooks {
 
     @Before()
     public void beforeInitDriver() {
-        ThreadLocalDriver.put(new Investing());
+        DriverUtilities.initDriver();
     }
 
     @After
     public void afterDisposeDriver() {
-        ThreadLocalDriver.get().dispose();
+        DriverUtilities.disposeDriver();
     }
 
 }

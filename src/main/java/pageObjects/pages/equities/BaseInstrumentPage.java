@@ -1,9 +1,9 @@
 
 package pageObjects.pages.equities;
 
-import infrastructure.Investing;
 import io.qameta.allure.Allure;
-import org.openqa.selenium.*;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
@@ -14,7 +14,7 @@ public class BaseInstrumentPage extends BasePage {
     @FindBy(tagName = "h1")
     protected WebElement pageTitle;
 
-    public BaseInstrumentPage(Investing driver) {
+    public BaseInstrumentPage(WebDriver driver) {
         super(driver);
         PageFactory.initElements(new AjaxElementLocatorFactory(driver, 10), this);
     }

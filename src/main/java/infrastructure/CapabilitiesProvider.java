@@ -8,12 +8,10 @@ import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.HashMap;
 
-import static infrastructure.constants.WebEnvParams.getHeadlessParam;
-
 public class CapabilitiesProvider {
 
-    public static AbstractDriverOptions<?> getCapability(String browser, String version, String mode) {
-        if (browser.equals("chrome")) {
+    public static AbstractDriverOptions<?> getCapability(String mode) {
+
             ChromeOptions chromeOptions = new ChromeOptions();
             chromeOptions.setCapability(CapabilityType.PLATFORM_NAME, Platform.ANY);
             chromeOptions.setPageLoadStrategy(PageLoadStrategy.EAGER);
@@ -24,9 +22,6 @@ public class CapabilitiesProvider {
                             "--disable-gpu",
                             "--window-size=1920,1200",
                             "--ignore-certificate-errors");
-
-                    if (getHeadlessParam())
-                        chromeOptions.addArguments("--headless");
 
                     chromeOptions.addArguments("--no-sandbox");
                     chromeOptions.addArguments("--disable-dev-shm-usage");
@@ -41,8 +36,8 @@ public class CapabilitiesProvider {
                     chromeOptions.addArguments("--remote-allow-origins=*");
                     chromeOptions.addArguments("--verbose");
 
-                    chromeOptions.setCapability("browserName", browser);
-                    chromeOptions.setCapability("browserVersion", version);
+                    chromeOptions.setCapability("browserName", "chrome");
+                    chromeOptions.setCapability("browserVersion", "latest");
 
                     chromeOptions.setCapability("selenoid:options", new HashMap<String, Object>() {{
                         put("enableLog", true);
@@ -53,8 +48,5 @@ public class CapabilitiesProvider {
             }
 
             return chromeOptions;
-        }
-        throw new IllegalArgumentException("[ERROR] Can't return capabilities for the specified " + browser + " browser " +
-                "or/and " + mode + "mode. make sure they are supported");
     }
 }
